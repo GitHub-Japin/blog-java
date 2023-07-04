@@ -1,0 +1,35 @@
+server:
+  port: 8081
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: root
+    url: jdbc:mysql://localhost:3306/vueblog?serverTimezone=UTC
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    #    password:
+    database: 0
+  cache:
+    redis:
+      time-to-live: 1800000 #缓冲有效时间
+
+mybatis-plus:
+#  configuration:
+#    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+#    map-underscore-to-camel-case: true #默认就是true
+#    config-location: classpath:mybatis-config.xml
+    mapper-locations: classpath*:/mapper/**Mapper.xml
+    global-config:
+      db-config:
+        table-prefix: zb_   #表名映射
+        logic-delete-value: 1  #逻辑删除是
+        logic-not-delete-value: 0 #逻辑删除否
+  # mapper-locations: classpath*:/mapper/**/*.xml
+
+jwt:
+  configuration:
+    expire: 300
+    secret: user
