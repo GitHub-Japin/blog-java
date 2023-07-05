@@ -1,4 +1,4 @@
-package com.Blog.common;
+package com.Blog.pojo;
 
 import lombok.Data;
 

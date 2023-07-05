@@ -1,6 +1,6 @@
 package com.Blog.controller;
 
-import com.Blog.common.LoginDto;
+import com.Blog.pojo.LoginDto;
 import com.Blog.common.Result;
 import com.Blog.jwt.JwtUtil;
 import com.Blog.pojo.User;
@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.DigestUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletResponse;
