@@ -8,4 +8,5 @@ import java.io.Serializable;
 public class BlogDto extends Blog implements Serializable {
     private static final long serialVersionUID = 1L;
     private String username;
+    private String categoryname;
 }

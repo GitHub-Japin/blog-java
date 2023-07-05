@@ -3,8 +3,10 @@ package com.Blog.controller;
 import com.Blog.common.Result;
 import com.Blog.pojo.Blog;
 import com.Blog.pojo.BlogDto;
+import com.Blog.pojo.Category;
 import com.Blog.pojo.User;
 import com.Blog.service.BlogService;
+import com.Blog.service.CategoryService;
 import com.Blog.service.UserService;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -27,7 +29,8 @@ import java.util.stream.Collectors;
 @Repository
 @RestController
 public class BlogController {
-
+    @Autowired
+    private CategoryService categoryService;
     @Autowired
     private BlogService blogService;
     @Autowired
@@ -86,12 +89,14 @@ public class BlogController {
         List<BlogDto> list = records.stream().map(item -> {
             BlogDto blogDto = new BlogDto();
             BeanUtils.copyProperties(item, blogDto);
-            Long id = item.getUserId();
-            User user = userService.getById(id);
-            if (user != null) {
-                String userName = user.getUsername();
-                blogDto.setUsername(userName);
-            }
+            Long uid = item.getUserId();
+            Long cid = item.getCategoryId();
+            User user = userService.getById(uid);
+            Category category = categoryService.getById(cid);
+            String userName = user.getUsername();
+            String categoryName = category.getCategoryname();
+            blogDto.setUsername(userName);
+            blogDto.setCategoryname(categoryName);
             return blogDto;
         }).collect(Collectors.toList());
 
@@ -119,6 +124,7 @@ public class BlogController {
             //当点击发表博客 即为添加
             targetBlog = new Blog();
             User user = (User) SecurityUtils.getSubject().getPrincipal();
+            targetBlog.setCategoryId(0L);
             targetBlog.setUserId(user.getId());
             targetBlog.setStatus(0);
             targetBlog.setCreated(LocalDateTime.now());

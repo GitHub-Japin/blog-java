@@ -15,6 +15,8 @@ public class Blog implements Serializable {
     @TableId(type = IdType.AUTO)
     private Long id;
 
+    private Long categoryId;
+
     private Long userId;
 
     private String title;

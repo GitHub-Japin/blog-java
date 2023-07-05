@@ -9,6 +9,5 @@ import javax.servlet.http.HttpServletResponse;
 
 
 public interface UserService extends IService<User> {
-
     void downLoadXlsxWithEayPoi(HttpServletRequest request, HttpServletResponse response);
 }
