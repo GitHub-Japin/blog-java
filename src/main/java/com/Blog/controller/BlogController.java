@@ -10,6 +10,10 @@ import com.Blog.service.CategoryService;
 import com.Blog.service.UserService;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.apache.shiro.SecurityUtils;
@@ -28,6 +32,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @Repository
 @RestController
+//@Api(tags = "博客控制器")
 public class BlogController {
     @Autowired
     private CategoryService categoryService;
@@ -47,6 +52,15 @@ public class BlogController {
     }*/
 
     //博客分页查询(主页，服务端)
+//    @ApiOperation(value = "博客分页查询", notes = "博客分页查询")
+//    @ApiImplicitParams({
+//            @ApiImplicitParam(name = "currentPage", value = "当前页码",
+//                    required = true, type = "int"),
+//            @ApiImplicitParam(name = "pageSize", value = "页码大小",
+//                    required = true, type = "int"),
+//            @ApiImplicitParam(name = "pageSize", value = "标题",
+//                    required = false, type = "String"),
+//    })
     @GetMapping("/blogs/page")
     @Cacheable(value = "blogsCache",key="#currentPage+'_'+#pageSize+'_'+#title")
     public Result<Page<BlogDto>> clientPage(int currentPage,int pageSize, String title) {

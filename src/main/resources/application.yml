@@ -2,6 +2,9 @@ server:
   port: 8081
 
 spring:
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
@@ -31,5 +34,13 @@ mybatis-plus:
 
 jwt:
   configuration:
-    expire: 300
+    expire: 3000
     secret: user
+
+blog:
+  swagger:
+    enabled: true #是否启用swagger
+    docket:
+      user:
+        title: 模块
+        base-package: com.Blog.controller
