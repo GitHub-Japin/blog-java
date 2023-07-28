@@ -12,7 +12,7 @@ V1.1完成功能：分类功能
 | 项目结构   |                                         |
 | :--- | ---- |
 | common     | 公共代码，异常处理、结果类等            |
-| config     | 配置类、mybatisplus、redis、shiro配置等 |
+| config     | 配置类、mybatisplus、redis、shiro、Swagger配置等 |
 | controller | 控制层代码                              |
 | dao        | 存放Mapper接口                          |
 | jwt        | jwt相关代码，过滤器、token生成等        |
@@ -29,6 +29,7 @@ V1.1完成功能：分类功能
 | 博客管理                      | 增删查改、预览、redis缓存分页结果 |
 | 登录注册                      |                                   |
 | shiro与jwt联合控制token失效等 |                                   |
+| Swagger文档 |                                   |
 
 
 
