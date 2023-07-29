@@ -2,6 +2,7 @@ package com.Blog.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.service.ApiInfo;
@@ -12,6 +13,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 @Configuration
 @EnableSwagger2
+@Lazy
 public class SwaggerAutoConfiguration {
     @Bean
     public Docket createRestApi1() {
@@ -23,8 +25,8 @@ public class SwaggerAutoConfiguration {
                 .build();
         return docket;
     }
-/*
-    @Bean
+
+    /*@Bean
     public Docket createRestApi2() {
         Docket docket = new Docket(DocumentationType.SWAGGER_2)
                 .apiInfo(apiInfo()).groupName("菜单接口组")

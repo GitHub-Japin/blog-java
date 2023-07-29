@@ -1,23 +1,35 @@
-server:
-  port: 8081
-
-spring:
-  mvc:
-    pathmatch:
-      matching-strategy: ant_path_matcher
-  datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    username: root
-    password: root
-    url: jdbc:mysql://localhost:3306/vueblog?serverTimezone=UTC
+Japin-Config:
+  server_port: 8081
+  username: root
+  password: root
+  jwt_timeout: 3000
+  jmx_enabled: false #jmx监控Java程序的基本信息和运行情况
   redis:
     host: 127.0.0.1
     port: 6379
+    timeout: 1800000
+
+server:
+  port: ${Japin-Config.server_port}
+
+spring:
+  jmx:
+    enabled: ${Japin-Config.jmx_enabled}
+  main:
+    lazy-initialization: true  #bean懒加载
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: ${Japin-Config.username}
+    password: ${Japin-Config.password}
+    url: jdbc:mysql://localhost:3306/vueblog?serverTimezone=UTC
+  redis:
+    host: ${Japin-Config.redis.host}
+    port: ${Japin-Config.redis.port}
     #    password:
     database: 0
   cache:
     redis:
-      time-to-live: 1800000 #缓冲有效时间
+      time-to-live: ${Japin-Config.redis.timeout} #缓冲有效时间
 
 mybatis-plus:
 #  configuration:
@@ -30,11 +42,10 @@ mybatis-plus:
         table-prefix: zb_   #表名映射
         logic-delete-value: 1  #逻辑删除是
         logic-not-delete-value: 0 #逻辑删除否
-  # mapper-locations: classpath*:/mapper/**/*.xml
 
 jwt:
   configuration:
-    expire: 3000
+    expire: ${Japin-Config.jwt_timeout}
     secret: user
 
 blog:

@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 public class MyMetaObjectHandler implements MetaObjectHandler {
 
     /**
-        * 插入数据时填充
+     * 插入数据时填充
      * @param metaObject
      */
     @Override
