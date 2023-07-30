@@ -6,6 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.ServletComponentScan;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
@@ -15,6 +16,7 @@ import java.net.InetAddress;
 @EnableTransactionManagement//事务
 @SpringBootApplication
 @EnableCaching//开启缓冲注解功能
+@EnableScheduling//开启定时任务功能
 public class VueBlogApplication {
     public static void main(String[] args) throws Exception {
         ConfigurableApplicationContext context = SpringApplication.run(VueBlogApplication.class, args);

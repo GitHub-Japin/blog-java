@@ -4,9 +4,9 @@
         "http://mybatis.org/dtd/mybatis-3-config.dtd">
 <configuration>
 
-    <!--<plugins>-->
-        <!--<plugin interceptor="com.baomidou.mybatisplus.extension.plugins.PaginationInterceptor"></plugin>-->
-    <!--</plugins>-->
+    <!--<plugins>
+        <plugin interceptor="com.baomidou.mybatisplus.extension.plugins.PaginationInterceptor"></plugin>
+    </plugins>-->
 
     <!--<plugins>
         &lt;!&ndash; 性能分析插件 &ndash;&gt;
