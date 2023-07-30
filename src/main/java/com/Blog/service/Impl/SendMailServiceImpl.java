@@ -5,6 +5,7 @@ import com.Blog.pojo.User;
 import com.Blog.service.SendMailService;
 import com.Blog.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -23,7 +24,8 @@ public class SendMailServiceImpl implements SendMailService {
     private UserService userService;
 
     //发送人
-    private final String from = "1940005020@qq.com";
+    @Value("${Japin-Config.mail_user}")
+    private String from;
     //标题
     private final String subject = "感谢邮件";
     //正文

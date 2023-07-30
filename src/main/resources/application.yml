@@ -6,7 +6,7 @@ Japin-Config:
   jmx_enabled: false #jmx监控Java程序的基本信息和运行情况
   mail_host: smtp.qq.com
   mail_user: 1940005020@qq.com
-  mail_pwd: #######
+  mail_pwd: mdnuhbvuvasvjhah
   redis:
     host: 127.0.0.1
     port: 6379
