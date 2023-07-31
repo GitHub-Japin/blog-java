@@ -2,7 +2,6 @@ package com.Blog.controller;
 
 import cn.hutool.core.date.DateUtil;
 import com.Blog.common.Result;
-import com.Blog.pojo.Category;
 import com.Blog.pojo.Comment;
 import com.Blog.pojo.User;
 import com.Blog.service.CommentService;
@@ -29,7 +28,7 @@ public class CommentController {
 
     // 新增或者更新
     @PostMapping
-    public Result save(@RequestBody Comment comment) {
+    public Result<String> save(@RequestBody Comment comment) {
         if (comment.getId() == null) {
             User user = (User) SecurityUtils.getSubject().getPrincipal();
             comment.setUserId(user.getId());
@@ -50,7 +49,10 @@ public class CommentController {
                 }
             }
         }
-        return Result.success(commentService.saveOrUpdate(comment));
+        if(commentService.saveOrUpdate(comment)){
+            return Result.success("操作成功");
+        }
+        return Result.error("操作失败");
     }
 
     @DeleteMapping("/{id}")
@@ -107,7 +109,7 @@ public class CommentController {
     }
 
     @GetMapping("/page")
-    public Result findPage(@RequestParam(defaultValue = "") String name,
+    public Result<Page<Comment>> findPage(@RequestParam(defaultValue = "") String name,
                            @RequestParam Integer pageNum,
                            @RequestParam Integer pageSize) {
         QueryWrapper<Comment> queryWrapper = new QueryWrapper<>();
