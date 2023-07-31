@@ -2,7 +2,6 @@ package com.Blog.controller;
 
 import com.Blog.common.Result;
 import com.Blog.pojo.Category;
-import com.Blog.pojo.User;
 import com.Blog.service.CategoryService;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
