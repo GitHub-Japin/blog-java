@@ -1,13 +1,13 @@
 #生产环境配置
 Japin-Config:
-  server_port: 8888
+  server_port: 8081
   username: root
   password: root
   jwt_timeout: 3000
   jmx_enabled: false #jmx监控Java程序的基本信息和运行情况
   mail_host: smtp.qq.com
   mail_user: 1940005020@qq.com
-  mail_pwd: xaipiakcatobehbe
+  mail_pwd: ####
   redis:
     host: 127.0.0.1
     port: 6379
@@ -62,11 +62,6 @@ spring:
     props:
       sql:
         show: true #开启SQL显示，默认false
-  #  datasource:
-  #    driver-class-name: com.mysql.cj.jdbc.Driver
-  #    username: ${Japin-Config.username}
-  #    password: ${Japin-Config.password}
-  #    url: jdbc:mysql://localhost:3306/vueblog?serverTimezone=UTC
   redis:
     host: ${Japin-Config.redis.host}
     port: ${Japin-Config.redis.port}
