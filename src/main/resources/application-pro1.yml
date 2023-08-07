@@ -41,7 +41,7 @@ spring:
     database: 0
   cache:
     redis:
-     time-to-live: ${Japin-Config.redis.timeout} #缓冲有效时间
+      time-to-live: ${Japin-Config.redis.timeout} #缓冲有效时间
 #配置数据源
 #master0,master1  分库分表
 #master0slave，master1slave 从服务器库
@@ -49,26 +49,26 @@ spring.shardingsphere.datasource.names: master0,master0slave,master1,master1slav
 # master0 数据源
 spring.shardingsphere.datasource.master0.type: com.alibaba.druid.pool.DruidDataSource
 spring.shardingsphere.datasource.master0.driver-class-name: com.mysql.cj.jdbc.Driver
-spring.shardingsphere.datasource.master0.url: jdbc:mysql://localhost:3306/blog_db?characterEncoding=utf-8
+spring.shardingsphere.datasource.master0.url: jdbc:mysql://localhost:3306/blog_db?serverTimezone=UTC
 spring.shardingsphere.datasource.master0.username: root
 spring.shardingsphere.datasource.master0.password: root
 
 spring.shardingsphere.datasource.master0slave.type: com.alibaba.druid.pool.DruidDataSource
 spring.shardingsphere.datasource.master0slave.driver-class-name: com.mysql.cj.jdbc.Driver
-spring.shardingsphere.datasource.master0slave.url: jdbc:mysql://localhost:3306/blog_db?characterEncoding=utf-8
+spring.shardingsphere.datasource.master0slave.url: jdbc:mysql://192.168.88.130:3306/blog_db?serverTimezone=UTC
 spring.shardingsphere.datasource.master0slave.username: root
 spring.shardingsphere.datasource.master0slave.password: root
 
 # master1 数据源
 spring.shardingsphere.datasource.master1.type: com.alibaba.druid.pool.DruidDataSource
 spring.shardingsphere.datasource.master1.driver-class-name: com.mysql.cj.jdbc.Driver
-spring.shardingsphere.datasource.master1.url: jdbc:mysql://localhost:3306/blog_db?characterEncoding=utf-8
+spring.shardingsphere.datasource.master1.url: jdbc:mysql://192.168.88.132:3306/blog_db?serverTimezone=UTC
 spring.shardingsphere.datasource.master1.username: root
 spring.shardingsphere.datasource.master1.password: root
 
 spring.shardingsphere.datasource.master1slave.type: com.alibaba.druid.pool.DruidDataSource
 spring.shardingsphere.datasource.master1slave.driver-class-name: com.mysql.cj.jdbc.Driver
-spring.shardingsphere.datasource.master1slave.url: jdbc:mysql://localhost:3306/blog_db?characterEncoding=utf-8
+spring.shardingsphere.datasource.master1slave.url: jdbc:mysql://192.168.88.133:3306/blog_db?serverTimezone=UTC
 spring.shardingsphere.datasource.master1slave.username: root
 spring.shardingsphere.datasource.master1slave.password: root
 

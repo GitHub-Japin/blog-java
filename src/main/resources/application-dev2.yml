@@ -1,5 +1,4 @@
-#生产环境配置
-#读写分离
+#读写分离，分表不分库
 Japin-Config:
   server_port: 8081
   username: root
@@ -8,7 +7,7 @@ Japin-Config:
   jmx_enabled: false #jmx监控Java程序的基本信息和运行情况
   mail_host: smtp.qq.com
   mail_user: 1940005020@qq.com
-  mail_pwd: ####
+  mail_pwd: xaipiakcatobehbe
   redis:
     host: 127.0.0.1
     port: 6379
@@ -22,9 +21,9 @@ spring:
     enabled: ${Japin-Config.jmx_enabled}
   main:
     lazy-initialization: true  #bean懒加载
-    allow-bean-definition-overriding: true #允许bean定义覆盖、由于使用druid和shardingjdbc的配置类都想实例化数据源对象，故需要
+    allow-bean-definition-overriding: true
   mail:
-    host:  smtp.qq.com
+    host: smtp.qq.com
     username: ${Japin-Config.mail_user}
     password: ${Japin-Config.mail_pwd}
   task:
@@ -33,36 +32,33 @@ spring:
       shutdown:
         await-termination: false # 线程池关闭时等待所有任务完成
         await-termination-period: 10s # 调度线程关闭前最大等待时间，确保最后一定关闭
-  shardingsphere:
-    datasource:
-      names:
-        master,slave
-      # 主数据源
-      master:
-        type: com.alibaba.druid.pool.DruidDataSource
-        driver-class-name: com.mysql.cj.jdbc.Driver
-        url: jdbc:mysql://192.168.88.132:3306/vueblog?serverTimezone=UTC
-        username: ${Japin-Config.username}
-        password: ${Japin-Config.password}
-      # 从数据源
-      slave:
-        type: com.alibaba.druid.pool.DruidDataSource
-        driver-class-name: com.mysql.cj.jdbc.Driver
-        url: jdbc:mysql://192.168.88.133:3306/vueblog?serverTimezone=UTC
-        username: ${Japin-Config.username}
-        password: ${Japin-Config.password}
-    masterslave:
-      # 读写分离配置
-      load-balance-algorithm-type: round_robin #轮询
-      # 最终的数据源名称
-      name: dataSource
-      # 主库数据源名称
-      master-data-source-name: master
-      # 从库数据源名称列表，多个逗号分隔
-      slave-data-source-names: slave
-    props:
-      sql:
-        show: true #开启SQL显示，默认false
+  #配置数据源，给数据源起名user0,user1...此处可配置多数据源
+  shardingsphere.datasource.names: master,slave
+  # 数据源
+  shardingsphere.datasource.master.type: com.alibaba.druid.pool.DruidDataSource
+  shardingsphere.datasource.master.driver-class-name: com.mysql.cj.jdbc.Driver
+  shardingsphere.datasource.master.url: jdbc:mysql://localhost:3306/blog_db?characterEncoding=utf-8
+  shardingsphere.datasource.master.username: root
+  shardingsphere.datasource.master.password: root
+
+  shardingsphere.datasource.slave.type: com.alibaba.druid.pool.DruidDataSource
+  shardingsphere.datasource.slave.driver-class-name: com.mysql.cj.jdbc.Driver
+  shardingsphere.datasource.slave.url: jdbc:mysql://localhost:3306/blog_db?characterEncoding=utf-8
+  shardingsphere.datasource.slave.username: root
+  shardingsphere.datasource.slave.password: root
+
+  # 配置表的分布，表的策略
+  shardingsphere.sharding.tables.blog.actual-data-nodes: ds0.blog${0..2}
+  # inline表达式   指定分片策略 约定id值
+  shardingsphere.sharding.tables.blog.table-strategy.inline.sharding-column: id
+  shardingsphere.sharding.tables.blog.table-strategy.inline.algorithm-expression: blog${id.longValue() % 3}
+
+  # 读写分离配置   ds0为临时数据源命名
+  shardingsphere.sharding.master-slave-rules.ds0.master-data-source-name: master
+  shardingsphere.sharding.master-slave-rules.ds0.slave-data-source-names: slave
+  # 打开sql输出日志
+  shardingsphere.props.sql.show: true
+
   redis:
     host: ${Japin-Config.redis.host}
     port: ${Japin-Config.redis.port}
@@ -80,7 +76,7 @@ mybatis-plus:
   mapper-locations: classpath*:/mapper/**Mapper.xml
   global-config:
     db-config:
-      table-prefix: zb_   #表名映射
+#      table-prefix: zb_   #表名映射
       logic-delete-value: 1  #逻辑删除是
       logic-not-delete-value: 0 #逻辑删除否
 

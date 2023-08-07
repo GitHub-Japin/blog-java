@@ -1,6 +1,7 @@
 package com.Blog.controller;
 
 import com.Blog.common.Result;
+import com.Blog.dao.BlogMapper;
 import com.Blog.pojo.Blog;
 import com.Blog.pojo.BlogDto;
 import com.Blog.pojo.Category;
@@ -179,5 +180,23 @@ public class BlogController {
         if (blog.getId() == null) return Result.error("博客不存在");
         blogService.removeById(id);
         return Result.success("博客已删除");
+    }
+
+    //测试接口
+    @GetMapping("/blog/addtest")
+    public Result<String> add() {
+        for (int i=0;i<10;i++){
+            Blog blog = new Blog();
+            blog.setId((long) i+1000);
+            blog.setCategoryId(1L);
+            blog.setCreated(LocalDateTime.now());
+            blog.setStatus(1);
+            blog.setUserId(1L);
+            blog.setContent("第"+i+"次内容");
+            blog.setDescription("第"+i+"次");
+            blog.setTitle("第"+i+"次");
+            blogService.save(blog);
+        }
+        return Result.success("success");
     }
 }
