@@ -27,6 +27,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -139,10 +140,9 @@ public class BlogController {
             //当点击发表博客 即为添加
             targetBlog = new Blog();
             User user = (User) SecurityUtils.getSubject().getPrincipal();
-            targetBlog.setCategoryId(0L);
             targetBlog.setUserId(user.getId());
             targetBlog.setStatus(0);
-            targetBlog.setCreated(LocalDateTime.now());
+            targetBlog.setCreated(new Date());
         }
         BeanUtils.copyProperties(blog, targetBlog, "id", "userId", "created", "status");
         //将博客添加/更新
@@ -189,7 +189,7 @@ public class BlogController {
             Blog blog = new Blog();
             blog.setId((long) i+1000);
             blog.setCategoryId(1L);
-            blog.setCreated(LocalDateTime.now());
+            blog.setCreated(new Date());
             blog.setStatus(1);
             blog.setUserId(1L);
             blog.setContent("第"+i+"次内容");

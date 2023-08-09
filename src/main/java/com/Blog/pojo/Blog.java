@@ -10,6 +10,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Date;
 
 @Data
 @ApiModel(value = "Blog", description = "博客实体")
@@ -36,7 +37,7 @@ public class Blog implements Serializable {
 
     @ApiModelProperty(value = "创建日期")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")//格式化时间
-    private LocalDateTime created;
+    private Date created;
 
     @ApiModelProperty(value = "状态")
     private Integer status;
