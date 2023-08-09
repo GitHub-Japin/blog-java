@@ -8,8 +8,6 @@ import java.util.Collection;
 
 /**
  * 自定义分片算法
- *
- * @author zcs
  */
 @Configuration
 public class MyPreciseShardingAlgorithm implements PreciseShardingAlgorithm<Long> {
