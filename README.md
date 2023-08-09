@@ -8,6 +8,7 @@ V1.1完成功能：分类功能
 
 v1.3相比于v1.0增加了Swagger文档、定时邮件、Echarts图标、统计功能等、
 使用了shardingjdbc实现读写分离、分库不分表读写分离、分库分表读写分离
+修复了部分bug（由于druid版本缘故，将localdatetime改为date，修复了分类的bug）
 
 | 项目结构   |                                         |
 | :--- | ---- |
