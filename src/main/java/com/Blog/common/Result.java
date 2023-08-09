@@ -7,9 +7,9 @@ import java.io.Serializable;
 
 @Data
 public class Result<T> implements Serializable {
-    private final static int SuccessCode =200;
+    private final static Integer SuccessCode =200;
     private final static String SuccessMsg ="操作成功";
-    private final static int FailCode =400;
+    private final static Integer FailCode =400;
 
     @ApiModelProperty(value = "响应编码:200-请求处理成功，400-失败")
     private Integer code;//状态码 200代表成功
