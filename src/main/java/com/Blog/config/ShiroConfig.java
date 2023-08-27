@@ -15,6 +15,7 @@ import javax.servlet.Filter;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+/*shiro配置类*/
 @Configuration
 public class ShiroConfig {
 

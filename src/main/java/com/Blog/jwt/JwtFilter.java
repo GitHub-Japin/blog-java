@@ -18,7 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-
+//登录处理JwtFilter继承shiro的AuthenticatingFilter
 public class JwtFilter extends AuthenticatingFilter {
 
     @Autowired
@@ -43,20 +43,29 @@ public class JwtFilter extends AuthenticatingFilter {
         return !StringUtils.hasLength(token);
     }
 
-    @Override //携带了Token时会执行该方法
+    @Override //携带了Token时会执行该方法，拦截
     protected boolean onAccessDenied(ServletRequest servletRequest, ServletResponse servletResponse) throws Exception {
         HttpServletRequest request = (HttpServletRequest)servletRequest;
         String token = request.getHeader("Authorization");
         Claims claims = jwtUtil.getClaimByToken(token);
         //校验是否为空和时间是否过期
-        try {
-            if(claims == null ||jwtUtil.isTokenExpired(claims.getExpiration())){
+        /*try {
+            if(claims == null ||jwtUtil.isTokenExpired(claims.getExpiration())){//如果token过期
                 SecurityUtils.getSubject().logout();
                 throw new ExpiredCredentialsException("token已失效,请重新登录");
             }
             return executeLogin(servletRequest,servletResponse);
         } catch (Exception e) {
             return true;
+        }*/
+        if(StringUtils.isEmpty(token)){
+            return true;
+        }else{
+            if(claims == null ||jwtUtil.isTokenExpired(claims.getExpiration())){//如果token过期
+                SecurityUtils.getSubject().logout();
+                throw new ExpiredCredentialsException("token已失效,请重新登录");
+            }
+            return executeLogin(servletRequest,servletResponse);
         }
     }
 
@@ -67,7 +76,7 @@ public class JwtFilter extends AuthenticatingFilter {
 
         String jsonMessage= JSON.toJSONString(Result.error(message));
         try {
-            System.out.println(jsonMessage);
+//            System.out.println(jsonMessage);
             httpServletResponse.getWriter().write(jsonMessage);
         } catch (IOException ioException) {
             ioException.printStackTrace();

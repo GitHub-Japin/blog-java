@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.annotation.*;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import javax.validation.constraints.Email;
@@ -14,6 +15,7 @@ import java.time.LocalDateTime;
 @Data
 //@Table(name="user")
 @ApiModel(value = "User",description = "用户实体")
+@AllArgsConstructor
 public class User implements Serializable {
     private static final long serialVersionUID = 1L;
     @TableId(type = IdType.AUTO)

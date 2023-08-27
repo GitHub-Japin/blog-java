@@ -39,7 +39,7 @@
         <!--安全框架shiro-->
         <dependency>
             <groupId>org.apache.shiro</groupId>
-            <artifactId>shiro-spring</artifactId>
+            <artifactId>shiro-spring</artifactId><!-- shiro和redis有一个合依赖shiro-redis-spring-boot-starter-->
             <version>1.5.3</version>
         </dependency>
         <!--jwt框架jjwt-->
@@ -210,11 +210,16 @@
             <artifactId>druid-spring-boot-starter</artifactId>
             <version>1.2.15</version>
         </dependency>
-        <!--读写分离使用sharding-jdbc-->
+        <!--读写分离、分库分表使用sharding-jdbc-->
         <dependency>
             <groupId>org.apache.shardingsphere</groupId>
             <artifactId>sharding-jdbc-spring-boot-starter</artifactId>
             <version>4.0.0-RC1</version>
+        </dependency>
+        <!--aop提供@Aspect-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-aop</artifactId>
         </dependency>
     </dependencies>
 

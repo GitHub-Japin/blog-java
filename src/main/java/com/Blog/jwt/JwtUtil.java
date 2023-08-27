@@ -19,7 +19,7 @@ public class JwtUtil {
     //密钥
     private String secret;
 
-    //生成(获取)JwtToken
+    //生成(获取)JwtToken，登录时调用
     public String generateToken(long userId){
         JwtBuilder builder = Jwts.builder();
         return builder.setHeaderParam("typ","Jwt") //头部
@@ -30,7 +30,7 @@ public class JwtUtil {
                 .compact();
     }
 
-    //获取JwtToken内的信息
+    //获取JwtToken内的信息，校验
     public Claims getClaimByToken(String token){
         try {
             return Jwts.parser()
@@ -38,6 +38,7 @@ public class JwtUtil {
                     .parseClaimsJws(token) //在这会判断下Token的有效性
                     .getBody();
         }catch (Exception e){
+            System.out.println("校验错误");
             return null;
         }
     }

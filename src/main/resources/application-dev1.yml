@@ -3,7 +3,7 @@ Japin-Config:
   server_port: 8081
   username: root
   password: root
-  jwt_timeout: 3000
+  jwt_timeout: 604800  #7天
   jmx_enabled: false #jmx监控Java程序的基本信息和运行情况
   mail_host: smtp.qq.com
   mail_user: 1940005020@qq.com
@@ -78,7 +78,7 @@ mybatis-plus:
 jwt:
   configuration:
     expire: ${Japin-Config.jwt_timeout}
-    secret: user
+    secret: thisismysecret123456789
 
 blog:
   swagger:
