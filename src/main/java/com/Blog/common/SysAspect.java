@@ -2,9 +2,11 @@ package com.Blog.common;
 
 import com.Blog.annotation.MyLog;
 import com.Blog.dao.OptLogMapper;
-import com.Blog.jwt.JwtUtil;
-import com.Blog.pojo.OptLog;
+import com.Blog.model.pojo.OptLog;
+import com.Blog.model.pojo.User;
+import com.Blog.service.UserService;
 import com.alibaba.fastjson.JSON;
+import org.apache.shiro.SecurityUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.Signature;
 import org.aspectj.lang.annotation.Around;
@@ -31,6 +33,9 @@ public class SysAspect {
     @Autowired
     private OptLogMapper optLogMapper;
 
+    @Autowired
+    private UserService userService;
+
     @Pointcut("@annotation(com.Blog.annotation.MyLog)")//指定范围为+Mylog注解的
     private void pointcut() {
     }
@@ -39,7 +44,15 @@ public class SysAspect {
     public Object around(ProceedingJoinPoint joinPoint) throws Throwable {
         OptLog optLog=new OptLog();
         //获取用户名
-        //需要通过解析seesion或token 获取
+        //1.获取用户id
+        User user = (User) SecurityUtils.getSubject().getPrincipal();
+        if(user!=null){
+            //User user = userService.getById(ThreadLocalUtil.getData());
+            //2.查询用户信息
+            optLog.setUserName(user.getUsername());
+        }else {
+            optLog.setUserName("访客");
+        }
 
         //获取增强类和方法的信息
         Signature signature = joinPoint.getSignature();
@@ -71,8 +84,8 @@ public class SysAspect {
         String restfulName = request.getMethod();
         optLog.setRestfulName(restfulName);
         //登录IP
-        String ipAddr = getIpAddr(request);
-        optLog.setClientIp(ipAddr);
+        String ip = getIpAddress(request);
+        optLog.setClientIp(ip);
 
         //操作时间
         optLog.setTime(new Date());
@@ -88,7 +101,7 @@ public class SysAspect {
         return joinPoint.proceed();
     }
 
-    private String getIpAddr(HttpServletRequest request) {
+    private String getIpAddress(HttpServletRequest request) {
         String ip = request.getHeader("x-forwarded-for");
         if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
             ip = request.getHeader("Proxy-Client-IP");

@@ -1,16 +1,14 @@
 package com.Blog;
 
 import com.Blog.dao.UserMapper;
-import com.Blog.pojo.User;
+import com.Blog.model.pojo.User;
 import com.Blog.service.SendMailService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.scheduling.annotation.Scheduled;
 
 import javax.mail.MessagingException;
 import java.time.LocalDateTime;
-import java.util.Date;
 
 @SpringBootTest
 class Tests {

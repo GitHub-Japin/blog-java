@@ -1,4 +1,4 @@
-package com.Blog.pojo;
+package com.Blog.model.pojo;
 
 import java.io.Serializable;
 import java.util.List;

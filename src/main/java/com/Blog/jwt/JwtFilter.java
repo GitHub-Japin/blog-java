@@ -2,6 +2,8 @@ package com.Blog.jwt;
 
 
 import com.Blog.common.Result;
+import com.Blog.common.ThreadLocalUtil;
+import com.Blog.constants.ResultConstant;
 import com.alibaba.fastjson.JSON;
 import io.jsonwebtoken.Claims;
 import org.apache.shiro.SecurityUtils;
@@ -63,7 +65,8 @@ public class JwtFilter extends AuthenticatingFilter {
         }else{
             if(claims == null ||jwtUtil.isTokenExpired(claims.getExpiration())){//如果token过期
                 SecurityUtils.getSubject().logout();
-                throw new ExpiredCredentialsException("token已失效,请重新登录");
+                ThreadLocalUtil.clean();
+                throw new ExpiredCredentialsException(ResultConstant.TokenTTLMsg);
             }
             return executeLogin(servletRequest,servletResponse);
         }

@@ -2,8 +2,8 @@ package com.Blog.controller;
 
 import cn.hutool.core.date.DateUtil;
 import com.Blog.common.Result;
-import com.Blog.pojo.Comment;
-import com.Blog.pojo.User;
+import com.Blog.model.pojo.Comment;
+import com.Blog.model.pojo.User;
 import com.Blog.service.CommentService;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;

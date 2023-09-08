@@ -1,6 +1,6 @@
 package com.Blog.dao;
 
-import com.Blog.pojo.Echarts;
+import com.Blog.model.dto.Echarts;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
 

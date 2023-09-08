@@ -1,4 +1,4 @@
-package com.Blog.pojo;
+package com.Blog.model.pojo;
 
 import cn.afterturn.easypoi.excel.annotation.Excel;
 import com.baomidou.mybatisplus.annotation.*;

@@ -3,10 +3,10 @@ package com.Blog.service.Impl;
 import com.Blog.annotation.MyLog;
 import com.Blog.common.Result;
 import com.Blog.dao.BlogMapper;
-import com.Blog.pojo.Blog;
-import com.Blog.pojo.BlogDto;
-import com.Blog.pojo.Category;
-import com.Blog.pojo.User;
+import com.Blog.model.pojo.Blog;
+import com.Blog.model.dto.BlogDto;
+import com.Blog.model.pojo.Category;
+import com.Blog.model.pojo.User;
 import com.Blog.service.BlogService;
 import com.Blog.service.CategoryService;
 import com.Blog.service.UserService;
@@ -22,8 +22,6 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.Date;
 import java.util.List;
@@ -38,7 +36,7 @@ public class BlogServiceImpl extends ServiceImpl<BlogMapper, Blog> implements Bl
     private CategoryService categoryService;
 
     @Override
-    @MyLog(name = "客户端分页请求")
+    //@MyLog(name = "客户端分页请求")
     @Cacheable(value = "blogsCache",key="#currentPage+'_'+#pageSize+'_'+#title")
     public Result<Page<BlogDto>> clientPage(int currentPage, int pageSize, String title) {
         Page<Blog> pages = new Page<>(currentPage, pageSize);
@@ -51,6 +49,7 @@ public class BlogServiceImpl extends ServiceImpl<BlogMapper, Blog> implements Bl
     }
 
     @Override
+    @RequiresAuthentication
     @MyLog(name = "管理端分页请求")
     @Cacheable(value = "blogsCache",key="#currentPage+'_'+#pageSize+'_'+#title")
     public Result<Page<BlogDto>> serverPage(int currentPage, int pageSize, String title) {
@@ -86,7 +85,7 @@ public class BlogServiceImpl extends ServiceImpl<BlogMapper, Blog> implements Bl
     }
 
     @Override
-    @MyLog(name = "文章详情(预览)请求")
+    //@MyLog(name = "文章详情(预览)请求")
     public Result<Blog> ViewDetails(Long id) {
         Blog blog = getById(id);
         return Result.success(blog);
@@ -94,7 +93,7 @@ public class BlogServiceImpl extends ServiceImpl<BlogMapper, Blog> implements Bl
 
     @Override
     @RequiresAuthentication
-    @MyLog(name = "后端文章点击查看请求")
+    //@MyLog(name = "后端文章点击查看请求")
     public Result<String> getBlogContent(Long id) {
         Blog blog = getById(id);
         if (blog == null) return Result.error("获取失败");

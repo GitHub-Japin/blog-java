@@ -1,5 +1,6 @@
-package com.Blog.pojo;
+package com.Blog.model.dto;
 
+import com.Blog.model.pojo.Blog;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;

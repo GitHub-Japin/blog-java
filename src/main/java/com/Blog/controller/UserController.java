@@ -1,7 +1,7 @@
 package com.Blog.controller;
 
 import com.Blog.common.Result;
-import com.Blog.pojo.User;
+import com.Blog.model.pojo.User;
 import com.Blog.service.UserService;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,8 +1,8 @@
 package com.Blog.service;
 
 import com.Blog.common.Result;
-import com.Blog.pojo.Blog;
-import com.Blog.pojo.BlogDto;
+import com.Blog.model.pojo.Blog;
+import com.Blog.model.dto.BlogDto;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 

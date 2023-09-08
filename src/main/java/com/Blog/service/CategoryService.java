@@ -1,11 +1,9 @@
 package com.Blog.service;
 
 import com.Blog.common.Result;
-import com.Blog.pojo.Category;
+import com.Blog.model.pojo.Category;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

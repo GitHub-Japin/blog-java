@@ -19,19 +19,19 @@ import java.util.Map;
 @Configuration
 public class ShiroConfig {
 
-    @Bean
+    @Bean//创建realm对象，需自定义类：1
     public AccountRealm accountRealm() {
         return new AccountRealm();
     }
 
-    @Bean
+    @Bean //DefaultWebSecurityManager：2
     public DefaultWebSecurityManager defaultWebSecurityManager(AccountRealm accountRealm) {
         DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();
         securityManager.setRealm(accountRealm);
         return securityManager;
     }
 
-    @Bean
+    @Bean//ShiroFilterFactoryBean：3
     public ShiroFilterFactoryBean shiroFilterFactoryBean(DefaultWebSecurityManager securityManager,
                                                          JwtFilter jwtFilter) {
         ShiroFilterFactoryBean factoryBean = new ShiroFilterFactoryBean();

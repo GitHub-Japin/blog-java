@@ -189,12 +189,12 @@
             <artifactId>knife4j-spring-boot-starter</artifactId>
             <version>3.0.2</version>
         </dependency>
-        <!--防止xss攻击-->
-        <dependency>
+        <!--数据校验框架、防止xss攻击，spring-boot-starter-web包中已经包含了Hibernate-Validator 依赖。-->
+       <!--<dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-validator</artifactId>
             <version>6.0.18.Final</version>
-        </dependency>
+        </dependency>-->
         <!--邮件框架mail-->
         <dependency>
             <groupId>org.springframework.boot</groupId>

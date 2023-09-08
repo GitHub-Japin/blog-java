@@ -1,13 +1,13 @@
 #测试环境配置(未引入shardingjdbc、druid)
 Japin-Config:
-  server_port: 8888
+  server_port: 8081
   username: root
   password: root
   jwt_timeout: 3000
   jmx_enabled: false #jmx监控Java程序的基本信息和运行情况
   mail_host: smtp.qq.com
   mail_user: 1940005020@qq.com
-  mail_pwd: ####
+  mail_pwd: xaipiakcatobehbe
   redis:
     host: 127.0.0.1
     port: 6379
@@ -31,11 +31,11 @@ spring:
       shutdown:
         await-termination: false # 线程池关闭时等待所有任务完成
         await-termination-period: 10s # 调度线程关闭前最大等待时间，确保最后一定关闭
-    datasource:
-      driver-class-name: com.mysql.cj.jdbc.Driver
-      username: ${Japin-Config.username}
-      password: ${Japin-Config.password}
-      url: jdbc:mysql://localhost:3306/vueblog?serverTimezone=UTC
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/blog_db?characterEncoding=utf-8&serverTimezone=UTC
+    username: ${Japin-Config.username}
+    password: ${Japin-Config.password}
   redis:
     host: ${Japin-Config.redis.host}
     port: ${Japin-Config.redis.port}
@@ -53,7 +53,7 @@ mybatis-plus:
   mapper-locations: classpath*:/mapper/**Mapper.xml
   global-config:
     db-config:
-      table-prefix: zb_   #表名映射
+      #      table-prefix: zb_   #表名映射
       logic-delete-value: 1  #逻辑删除是
       logic-not-delete-value: 0 #逻辑删除否
 

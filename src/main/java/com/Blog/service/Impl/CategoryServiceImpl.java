@@ -7,9 +7,9 @@ import com.Blog.annotation.MyLog;
 import com.Blog.common.CustomException;
 import com.Blog.common.Result;
 import com.Blog.dao.CategoryMapper;
-import com.Blog.pojo.Blog;
-import com.Blog.pojo.Category;
-import com.Blog.pojo.User;
+import com.Blog.model.pojo.Blog;
+import com.Blog.model.pojo.Category;
+import com.Blog.model.pojo.User;
 import com.Blog.service.BlogService;
 import com.Blog.service.CategoryService;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -40,6 +40,7 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
     private BlogService blogService;
 
     @Override
+    @RequiresAuthentication
     @MyLog(name = "分类分页请求")
     public Result<Page<Category>> page(int currentPage, int pageSize, String title) {
         Page<Category> page = new Page<>(currentPage, pageSize);
@@ -107,6 +108,7 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
     }
 
     @Override
+    @RequiresAuthentication
     public void remove(Long id) {//根据id删除分类前需要判断
         //查询分类是否关联菜品、套餐
         LambdaQueryWrapper<Blog> blogWrapper = new LambdaQueryWrapper<>();

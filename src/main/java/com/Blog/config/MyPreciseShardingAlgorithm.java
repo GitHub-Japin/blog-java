@@ -1,3 +1,4 @@
+/*
 package com.Blog.config;
 
 import org.apache.shardingsphere.api.sharding.standard.PreciseShardingAlgorithm;
@@ -6,9 +7,11 @@ import org.springframework.context.annotation.Configuration;
 
 import java.util.Collection;
 
+*/
 /**
  * 自定义分片算法
- */
+ *//*
+
 @Configuration
 public class MyPreciseShardingAlgorithm implements PreciseShardingAlgorithm<Long> {
 
@@ -22,3 +25,4 @@ public class MyPreciseShardingAlgorithm implements PreciseShardingAlgorithm<Long
 		throw new IllegalArgumentException();
 	}
 }
+*/

@@ -1,6 +1,6 @@
 package com.Blog.dao;
 
-import com.Blog.pojo.Category;
+import com.Blog.model.pojo.Category;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
 

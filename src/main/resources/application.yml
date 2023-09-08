@@ -1,3 +1,9 @@
 spring:
   profiles:
    active: dev2
+
+login:
+  types:
+    account: accountGranter
+    sms: smsGranter
+    we_chat: weChatGranter

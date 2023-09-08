@@ -1,4 +1,4 @@
-package com.Blog.pojo;
+package com.Blog.model.dto;
 
 
 import lombok.Data;
@@ -6,5 +6,5 @@ import lombok.Data;
 @Data
 public class Echarts {
     private String categoryName;
-    private Object count;
+    private Integer count;
 }

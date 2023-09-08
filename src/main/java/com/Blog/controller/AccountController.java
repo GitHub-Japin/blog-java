@@ -1,11 +1,13 @@
 package com.Blog.controller;
 
 import com.Blog.annotation.MyLog;
-import com.Blog.pojo.LoginDto;
+import com.Blog.model.dto.LoginDto;
 import com.Blog.common.Result;
-import com.Blog.pojo.User;
+import com.Blog.model.pojo.User;
 import com.Blog.service.UserService;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
+
+import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,7 +24,7 @@ public class AccountController {
 
     @PostMapping("/login")
     @MyLog(name = "账号登录")
-    public Result<User> login(@RequestBody LoginDto loginDto, HttpServletResponse response) {
+    public Result<User> login(@Valid @RequestBody LoginDto loginDto, HttpServletResponse response) {
         return userService.login(loginDto, response);
     }
 

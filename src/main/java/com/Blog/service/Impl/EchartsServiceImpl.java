@@ -1,16 +1,21 @@
 package com.Blog.service.Impl;
 
+import com.Blog.annotation.MyLog;
 import com.Blog.common.Result;
 import com.Blog.dao.EchartsMapper;
-import com.Blog.pojo.Blog;
-import com.Blog.pojo.Category;
-import com.Blog.pojo.Echarts;
+import com.Blog.model.dto.UserEcharts;
+import com.Blog.model.pojo.Blog;
+import com.Blog.model.pojo.Category;
+import com.Blog.model.dto.Echarts;
+import com.Blog.model.pojo.User;
 import com.Blog.service.BlogService;
 import com.Blog.service.CategoryService;
 import com.Blog.service.EchartsService;
+import com.Blog.service.UserService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,9 +30,13 @@ public class EchartsServiceImpl extends ServiceImpl<EchartsMapper, Echarts> impl
     private BlogService blogService;
     @Autowired
     private CategoryService categoryService;
+    @Autowired
+    private UserService userService;
 
     @Override
-    public Result<List<Echarts>> getUserEcharts() {
+    @RequiresAuthentication
+    @MyLog(name = "分类下博客数量统计请求")
+    public Result<List<Echarts>> getCategoryEcharts() {
         QueryWrapper<Blog> BlogWrapper = new QueryWrapper<>();
         BlogWrapper.select("id","category_id");//select id, category_id from blog
         List<Blog> blogList = blogService.list(BlogWrapper);//查出所有blogid,categoryid
@@ -42,6 +51,32 @@ public class EchartsServiceImpl extends ServiceImpl<EchartsMapper, Echarts> impl
             for (Category category :categoryList){
                 if (k.equals(category.getId())){
                     echarts.setCategoryName(category.getCategoryname());
+                    echarts.setCount(map.get(k));
+                }
+            }
+            echartsList.add(echarts);
+        });
+        return Result.success(echartsList);
+    }
+
+    @Override
+//    @RequiresAuthentication
+    @MyLog(name = "用户发表博客数量统计请求")
+    public Result<List<UserEcharts>> getUserEcharts() {
+        QueryWrapper<Blog> blogWrapper = new QueryWrapper<>();
+        blogWrapper.select("id","user_id");
+        List<Blog> blogList = blogService.list(blogWrapper);
+        HashMap<Long, Integer> map=new HashMap<>();
+        for(Blog blog : blogList){
+            map.put(blog.getUserId(),map.getOrDefault(blog.getUserId(),0)+1);
+        }
+        List<UserEcharts> echartsList = new ArrayList<>();
+        List<User> userList = userService.list();//查出所有用户
+        map.forEach((k,v)->{
+            UserEcharts echarts = new UserEcharts();
+            for (User user :userList){
+                if (k.equals(user.getId())){
+                    echarts.setUserName(user.getUsername());
                     echarts.setCount(map.get(k));
                 }
             }

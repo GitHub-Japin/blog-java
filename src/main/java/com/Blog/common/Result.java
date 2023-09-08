@@ -1,5 +1,6 @@
 package com.Blog.common;
 
+import com.Blog.constants.ResultConstant;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
@@ -7,9 +8,6 @@ import java.io.Serializable;
 
 @Data
 public class Result<T> implements Serializable {
-    private final static Integer SuccessCode =200;
-    private final static String SuccessMsg ="操作成功";
-    private final static Integer FailCode =400;
 
     @ApiModelProperty(value = "响应编码:200-请求处理成功，400-失败")
     private Integer code;//状态码 200代表成功
@@ -23,8 +21,8 @@ public class Result<T> implements Serializable {
     public static <T> Result<T> success(T data) {//成功
         Result<T> res = new Result<>();
         res.data = data;
-        res.msg = SuccessMsg;
-        res.code = SuccessCode;
+        res.msg = ResultConstant.SuccessMsg;
+        res.code = ResultConstant.SuccessCode;
         return res;
     }
 
@@ -32,7 +30,7 @@ public class Result<T> implements Serializable {
     public static <T> Result<T> error(String msg) {
         Result<T> res = new Result<>();
         res.msg = msg;
-        res.code = FailCode;
+        res.code = ResultConstant.FailCode;
         return res;
     }
 

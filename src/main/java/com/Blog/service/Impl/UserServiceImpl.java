@@ -5,10 +5,12 @@ import cn.afterturn.easypoi.excel.entity.ExportParams;
 import cn.afterturn.easypoi.excel.entity.enmus.ExcelType;
 import com.Blog.annotation.MyLog;
 import com.Blog.common.Result;
+import com.Blog.common.ThreadLocalUtil;
+import com.Blog.constants.ResultConstant;
 import com.Blog.dao.UserMapper;
 import com.Blog.jwt.JwtUtil;
-import com.Blog.pojo.LoginDto;
-import com.Blog.pojo.User;
+import com.Blog.model.dto.LoginDto;
+import com.Blog.model.pojo.User;
 import com.Blog.service.UserService;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -23,7 +25,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.DigestUtils;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
@@ -47,25 +48,27 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         qw.eq("username", loginDto.getUsername());
         User user = getOne(qw);
         if (user == null) {
-            return Result.error("账号不存在");
+            return Result.error(ResultConstant.AccountNotExist);
         }
         String password = DigestUtils.md5DigestAsHex(loginDto.getPassword().getBytes());
         if (!user.getPassword().equals(password)) {
-            return Result.error("密码不正确");
+            return Result.error(ResultConstant.PasswordNotCorrect);
         }
-        if(user.getStatus().equals(1)){
-            return Result.error("账号已被禁用");
+        if(user.getStatus().equals(ResultConstant.AccountLockCode)){
+            return Result.error(ResultConstant.AccountLock);
         }
         String jwt = jwtUtil.generateToken(user.getId());
         response.setHeader("Authorization", jwt);
-
+        //ThreadLocalUtil.setData(user.getId());
+        //ThreadLocalUtil.setMap(user.getId(),user.getUsername());
         return Result.success(user);
     }
 
     @Override
     public Result<String> logout() {
         SecurityUtils.getSubject().logout();
-        return Result.success("注销成功");
+        ThreadLocalUtil.clean();
+        return Result.success(ResultConstant.AccountLogout);
     }
 
     @Override
@@ -83,10 +86,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     @MyLog(name = "用户状态更新请求")
     public Result<String> updateStatus(Long id, int status) {
         User user = getById(id);
-        if (user == null) return Result.error("用户不存在");
+        if (user == null) return Result.error(ResultConstant.UserNotExitMsg);
         user.setStatus(status);
         updateById(user);
-        return Result.success("账号更新成功");
+        return Result.success(ResultConstant.SuccessMsg);
     }
 
     @Override
@@ -95,9 +98,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     @MyLog(name = "用户删除请求")
     public Result<String> deleteUser(Long id) {
         User user = getById(id);
-        if (user == null) return Result.error("用户不存在");
+        if (user == null) return Result.error(ResultConstant.UserNotExitMsg);
         removeById(id);
-        return Result.success("用户删除成功");
+        return Result.success(ResultConstant.SuccessMsg);
     }
 
     @Override
@@ -109,13 +112,13 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         lqw.eq(User::getUsername, user.getUsername());/*select * from user where username= ''*/
         User users = getOne(lqw);//原本数据库对象
         if (users !=null){
-            return Result.error("用户已存在");
+            return Result.error(ResultConstant.UserExistMsg);
         }
         user.setPassword(DigestUtils.md5DigestAsHex(user.getPassword().getBytes()));
-        user.setStatus(0);
+        user.setStatus(ResultConstant.AccountUnLockCode);
         user.setCreated(LocalDateTime.now());
         save(user);
-        return Result.success("用户添加成功");
+        return Result.success(ResultConstant.SuccessMsg);
     }
 
     @Override
@@ -129,13 +132,13 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         lqw.eq(User::getUsername, user.getUsername());/*select * from user where username= ''得到整行数据*/
         User initUser = getOne(lqw);//原本数据库对象
         if (initUser ==null){
-            return Result.error("用户不存在");
+            return Result.error(ResultConstant.UserNotExitMsg);
         }
         if(initUser.getUsername().equals(user.getUsername())
                 && initUser.getAvatar().equals(user.getAvatar())
                 && initUser.getEmail().equals(user.getEmail())
                 && initUser.getPassword().equals(DigestUtils.md5DigestAsHex(user.getPassword().getBytes()))){
-            return Result.error("当前信息未修改");
+            return Result.error(ResultConstant.FailMsg);
         }
         initUser.setUsername(user.getUsername());
 
@@ -146,9 +149,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         initUser.setEmail(user.getEmail());
         initUser.setPassword(DigestUtils.md5DigestAsHex(user.getPassword().getBytes()));
         if(updateById(initUser)){
-            return Result.success("用户信息更新成功");
+            return Result.success(ResultConstant.SuccessMsg);
         }else {
-            return Result.error("用户信息更新失败");
+            return Result.error(ResultConstant.FailMsg);
         }
     }
 
@@ -175,4 +178,43 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             e.printStackTrace();
         }
     }
+
+    /*@Autowired
+    private UserLoginFactory factory;
+
+    public LoginResp login(LoginReq loginReq){
+        UserGranter granter = factory.getGranter(loginReq.getType());
+        if(granter == null){
+            LoginResp loginResp = new LoginResp();
+            loginResp.setSuccess(false);
+            return loginResp;
+        }
+        LoginResp loginResp = granter.login(loginReq);
+        return loginResp;
+
+        *//*if(loginReq.getType().equals("account")){
+            System.out.println("用户名密码登录");
+
+            //执行用户密码登录逻辑
+
+            return new LoginResp();
+
+        }else if(loginReq.getType().equals("sms")){
+            System.out.println("手机号验证码登录");
+
+            //执行手机号验证码登录逻辑
+
+            return new LoginResp();
+        }else if (loginReq.getType().equals("we_chat")){
+            System.out.println("微信登录");
+
+            //执行用户微信登录逻辑
+
+            return new LoginResp();
+        }
+        LoginResp loginResp = new LoginResp();
+        loginResp.setSuccess(false);
+        System.out.println("登录失败");
+        return loginResp;*//*
+    }*/
 }

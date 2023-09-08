@@ -1,8 +1,8 @@
 package com.Blog.controller;
 
 import com.Blog.common.Result;
-import com.Blog.pojo.Blog;
-import com.Blog.pojo.BlogDto;
+import com.Blog.model.pojo.Blog;
+import com.Blog.model.dto.BlogDto;
 import com.Blog.service.BlogService;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.beans.factory.annotation.Autowired;
