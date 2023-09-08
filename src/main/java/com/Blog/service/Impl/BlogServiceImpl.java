@@ -93,7 +93,7 @@ public class BlogServiceImpl extends ServiceImpl<BlogMapper, Blog> implements Bl
 
     @Override
     @RequiresAuthentication
-    //@MyLog(name = "后端文章点击查看请求")
+    @MyLog(name = "后端文章点击查看请求")
     public Result<String> getBlogContent(Long id) {
         Blog blog = getById(id);
         if (blog == null) return Result.error("获取失败");

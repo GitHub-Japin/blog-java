@@ -33,9 +33,6 @@ public class SysAspect {
     @Autowired
     private OptLogMapper optLogMapper;
 
-    @Autowired
-    private UserService userService;
-
     @Pointcut("@annotation(com.Blog.annotation.MyLog)")//指定范围为+Mylog注解的
     private void pointcut() {
     }

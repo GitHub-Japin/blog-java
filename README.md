@@ -14,14 +14,18 @@ v1.4代码迁移与优化，新增了日志管理等
 
 | 项目结构   |                                         |
 | :--- | ---- |
+| annotation     | 自定义注解            |
 | common     | 公共代码，异常处理、结果类等            |
-| config     | 配置类、mybatisplus、redis、shiro、Swagger配置等 |
+| config     | 配置类、mybatisplus、redis、shiro、Swagger配置、定时任务配置等 |
+| constants     | 结果常量 |
 | controller | 控制层代码                              |
 | dao        | 存放Mapper接口                          |
+| interceptor        | 拦截器                          |
 | jwt        | jwt相关代码，过滤器、token生成等        |
-| pojo       | 实体类                                  |
+| model       | 实体类pojo、dto、vo                               |
 | service    | 服务层代码                              |
 | shiro      |shiro授权认证|
+| strategy      |设计模式（工厂+策略）|
 
 
 
@@ -31,7 +35,7 @@ v1.4代码迁移与优化，新增了日志管理等
 | 分类管理                      | 增删查改                          |
 | 博客管理                      | 增删查改、预览、redis缓存分页结果 |
 | 统计管理                      | 使用Echarts进行分类下博客数量统计、统计用户发博客数量等 |
-| 日志管理                      |                                   |
+| 日志管理                      | 删，aop生成                                  |
 | 登录注册                      |                                   |
 | shiro与jwt联合控制token失效等 |                                   |
 | Swagger文档 |                                   |

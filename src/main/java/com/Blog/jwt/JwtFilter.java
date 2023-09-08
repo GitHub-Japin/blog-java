@@ -65,7 +65,7 @@ public class JwtFilter extends AuthenticatingFilter {
         }else{
             if(claims == null ||jwtUtil.isTokenExpired(claims.getExpiration())){//如果token过期
                 SecurityUtils.getSubject().logout();
-                ThreadLocalUtil.clean();
+//                ThreadLocalUtil.clean();
                 throw new ExpiredCredentialsException(ResultConstant.TokenTTLMsg);
             }
             return executeLogin(servletRequest,servletResponse);
