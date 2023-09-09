@@ -65,6 +65,35 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     }
 
     @Override
+    public Result<User> loginWithSalt(LoginDto loginDto, HttpServletResponse response) {
+        if(loginDto.getUsername()==null||loginDto.getPassword()==null
+                ||StringUtils.isEmpty(loginDto.getUsername())
+                || StringUtils.isEmpty(loginDto.getPassword())){
+            return Result.error(ResultConstant.FailMsg);
+        }
+        LambdaQueryWrapper<User> queryWrapper=new LambdaQueryWrapper<>();
+        queryWrapper.eq(User::getUsername, loginDto.getUsername());
+        User user=getOne(queryWrapper);
+        if (user==null||user.getDeleted()==1){
+            return Result.error(ResultConstant.AccountNotExist);
+        }
+        if(user.getStatus().equals(ResultConstant.AccountLockCode)){
+            return Result.error(ResultConstant.AccountLock);
+        }
+        String password = DigestUtils.md5DigestAsHex((loginDto.getPassword()+user.getSalt()).getBytes());
+        if (!password.equals(user.getPassword())){
+            return Result.error(ResultConstant.PasswordNotCorrect);
+        }
+        String jwt = jwtUtil.generateToken(user.getId());
+        response.setHeader("Authorization", jwt);
+        //salt与密码不返回前端
+        user.setSalt("");
+        user.setPassword("");
+
+        return Result.success(user);
+    }
+
+    @Override
     public Result<String> logout() {
         SecurityUtils.getSubject().logout();
         ThreadLocalUtil.clean();

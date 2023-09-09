@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 
 public interface UserService extends IService<User> {
     Result<User> login(LoginDto loginDto, HttpServletResponse response);
+    Result<User> loginWithSalt(LoginDto loginDto, HttpServletResponse response);
     Result<String> logout();
     Result<Page<User>> page(int currentPage, int pageSize, String name);
     Result<String> updateStatus(Long id, int status);

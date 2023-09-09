@@ -24,7 +24,7 @@ public class CommentController {
         return commentService.saveComment(comment);
     }
 
-    @RequiresAuthentication
+//    @RequiresAuthentication
     @GetMapping
     public Map<String,List<Comment>> list(@RequestParam Long blogId){
         return commentService.list(blogId);

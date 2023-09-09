@@ -40,6 +40,10 @@ public class User implements Serializable {
     @Excel(name = "密码", orderNum = "4", width = 15, isImportField = "true")
     private String password;
 
+    @ApiModelProperty(value = "salt")
+    @Excel(name = "salt", orderNum = "4", width = 15, isImportField = "true")
+    private String salt;
+
     @ApiModelProperty(value = "状态")
     @Excel(name = "状态", orderNum = "5", width = 10, type = 10, isImportField = "true")
     private Integer status;

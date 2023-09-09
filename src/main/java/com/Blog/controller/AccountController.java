@@ -25,7 +25,7 @@ public class AccountController {
     @PostMapping("/login")
     @MyLog(name = "账号登录")
     public Result<User> login(@Valid @RequestBody LoginDto loginDto, HttpServletResponse response) {
-        return userService.login(loginDto, response);
+        return userService.loginWithSalt(loginDto, response);
     }
 
     @RequiresAuthentication
