@@ -4,6 +4,7 @@ import cn.afterturn.easypoi.excel.ExcelExportUtil;
 import cn.afterturn.easypoi.excel.entity.ExportParams;
 import cn.afterturn.easypoi.excel.entity.enmus.ExcelType;
 import com.Blog.annotation.MyLog;
+import com.Blog.common.RandomStringSalt;
 import com.Blog.common.Result;
 import com.Blog.common.ThreadLocalUtil;
 import com.Blog.constants.ResultConstant;
@@ -32,6 +33,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Random;
 
 @Slf4j
 @Service
@@ -137,12 +139,16 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     @RequiresAuthentication
     @MyLog(name = "用户注册请求")
     public Result<String> saveUser(User user) {
+        String salt = RandomStringSalt.generateRandomString(5);
+        Random random = new Random(52);
+        random.nextInt();
         LambdaQueryWrapper<User> lqw = new LambdaQueryWrapper<>();
         lqw.eq(User::getUsername, user.getUsername());/*select * from user where username= ''*/
         User users = getOne(lqw);//原本数据库对象
         if (users !=null){
             return Result.error(ResultConstant.UserExistMsg);
         }
+        user.setSalt(salt);
         user.setPassword(DigestUtils.md5DigestAsHex(user.getPassword().getBytes()));
         user.setStatus(ResultConstant.AccountUnLockCode);
         user.setCreated(LocalDateTime.now());
