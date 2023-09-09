@@ -50,15 +50,15 @@ public class CommentController {
         //找出本博客下所有评论
         List<Comment> comments = commentService.findAllByBlogId(blogId);
         List<Comment> resComments = new ArrayList<>();
-        log.error("=======================================>{}",comments);
+        //设置头像
         for(Comment comment : comments){
             comment.setAvatar(userService.getById(comment.getUserId()).getAvatar());
             resComments.add(comment);
         }
-        log.error("=======================================>{}",resComments);
-        List<Comment> rootComments = resComments.stream().filter(comment -> comment.getPid() == null).collect(Collectors.toList());//过滤pid为空的评论出来为子评论
+        //过滤pid为空的评论出来为子评论、放置root评论的子评论集合
+        List<Comment> rootComments = resComments.stream().filter(comment -> comment.getPid() == null).collect(Collectors.toList());
         for (Comment rootComment : rootComments) {
-            rootComment.setChildren(comments.stream().filter(comment -> rootComment.getId().equals(comment.getPid())).collect(Collectors.toList()));//放置root评论的子评论集合
+            rootComment.setChildren(comments.stream().filter(comment -> rootComment.getId().equals(comment.getPid())).collect(Collectors.toList()));
         }
         map.put("comments",rootComments);
         return map;
