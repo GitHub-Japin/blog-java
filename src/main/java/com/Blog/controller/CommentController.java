@@ -45,8 +45,8 @@ public class CommentController {
     }
 
     @GetMapping
-    public Map<String,Object> list(@RequestParam Long blogId){
-        Map<String,Object> map = new HashMap<>();
+    public Map<String,List<Comment>> list(@RequestParam Long blogId){
+        Map<String,List<Comment>> map = new HashMap<>();
         //找出本博客下所有评论
         List<Comment> comments = commentService.findAllByBlogId(blogId);
         List<Comment> resComments = new ArrayList<>();
