@@ -1,14 +1,18 @@
 package com.Blog.service.Impl;
 
 import com.Blog.dao.CommentMapper;
+import com.Blog.dao.UserMapper;
 import com.Blog.model.pojo.Comment;
+import com.Blog.model.pojo.User;
 import com.Blog.service.CommentService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -16,11 +20,10 @@ import java.util.List;
 public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> implements CommentService {
     @Resource
     private CommentMapper commentMapper;
-
     @Override
     public List<Comment> findAllByBlogId(Long blogId) {
         QueryWrapper<Comment> wrapper = new QueryWrapper<>();
-        wrapper.eq("blog_id",blogId);
+        wrapper.eq("blog_id",blogId);//select * from comment where blog_id=?
         return commentMapper.selectList(wrapper);
     }
 }

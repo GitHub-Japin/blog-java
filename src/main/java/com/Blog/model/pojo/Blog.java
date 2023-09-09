@@ -34,7 +34,7 @@ public class Blog implements Serializable {
     private String content;
 
     @ApiModelProperty(value = "创建日期")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")//格式化时间
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss", timezone="GMT+8")
     private Date created;
 
     @ApiModelProperty(value = "状态")

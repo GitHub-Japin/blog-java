@@ -9,6 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import javax.mail.MessagingException;
 import java.time.LocalDateTime;
+import java.util.Date;
 
 @SpringBootTest
 class Tests {
@@ -32,5 +33,12 @@ class Tests {
         for (long i=0;i<100000;i++){
             userMapper.insert(new User(i,"user2"+i,"https://image-1300566513.cos.ap-guangzhou.myqcloud.com/upload/images/5a9f48118166308daba8b6da7e466aab.jpg","kqvafz39564@chacuo.net","96e79218965eb72c92a549dd5a330112",1,LocalDateTime.now(),0));
         }
+    }
+
+
+    @Test
+    void testTime(){
+        System.out.println(LocalDateTime.now());
+        System.out.println(new Date());
     }
 }

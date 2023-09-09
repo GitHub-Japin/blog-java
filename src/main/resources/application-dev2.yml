@@ -37,13 +37,13 @@ spring:
   # 数据源
   shardingsphere.datasource.master.type: com.alibaba.druid.pool.DruidDataSource
   shardingsphere.datasource.master.driver-class-name: com.mysql.cj.jdbc.Driver
-  shardingsphere.datasource.master.url: jdbc:mysql://localhost:3306/blog_db?characterEncoding=utf-8
+  shardingsphere.datasource.master.url: jdbc:mysql://localhost:3306/blog_db?characterEncoding=utf-8&serverTimezone=Asia/Shanghai
   shardingsphere.datasource.master.username: root
   shardingsphere.datasource.master.password: root
 
   shardingsphere.datasource.slave.type: com.alibaba.druid.pool.DruidDataSource
   shardingsphere.datasource.slave.driver-class-name: com.mysql.cj.jdbc.Driver
-  shardingsphere.datasource.slave.url: jdbc:mysql://localhost:3306/blog_db?characterEncoding=utf-8
+  shardingsphere.datasource.slave.url: jdbc:mysql://localhost:3306/blog_db?characterEncoding=utf-8&serverTimezone=Asia/Shanghai
   shardingsphere.datasource.slave.username: root
   shardingsphere.datasource.slave.password: root
 
