@@ -17,6 +17,10 @@ server:
   port: ${Japin-Config.server_port}
 
 spring:
+  # 统一路径匹配规则，解决文档接口报错
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
   jmx:
     enabled: ${Japin-Config.jmx_enabled}
   main:

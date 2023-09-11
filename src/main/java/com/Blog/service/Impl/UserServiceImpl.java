@@ -140,8 +140,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     @MyLog(name = "用户注册请求")
     public Result<String> saveUser(User user) {
         String salt = RandomStringSalt.generateRandomString(5);
-        Random random = new Random(52);
-        random.nextInt();
         LambdaQueryWrapper<User> lqw = new LambdaQueryWrapper<>();
         lqw.eq(User::getUsername, user.getUsername());/*select * from user where username= ''*/
         User users = getOne(lqw);//原本数据库对象

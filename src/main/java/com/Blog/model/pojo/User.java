@@ -7,6 +7,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.Email;
 import java.io.Serializable;
@@ -16,6 +17,7 @@ import java.time.LocalDateTime;
 //@Table(name="user")
 @ApiModel(value = "User",description = "用户实体")
 @AllArgsConstructor
+@NoArgsConstructor
 public class User implements Serializable {
     private static final long serialVersionUID = 1L;
     @TableId(type = IdType.AUTO)

@@ -1,23 +1,32 @@
 
 package com.Blog.service.Impl;
 
+import cn.hutool.core.lang.Validator;
+import cn.hutool.core.util.RandomUtil;
+import cn.hutool.core.util.StrUtil;
+import com.Blog.constants.EmailConstant;
+import com.Blog.model.dto.EmailReq;
 import com.Blog.model.pojo.User;
 import com.Blog.service.SendMailService;
 import com.Blog.service.UserService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
 import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class SendMailServiceImpl implements SendMailService {
 
-    @Autowired
-    private JavaMailSender javaMailSender;
+    private final JavaMailSender javaMailSender;
     @Autowired
     private UserService userService;
 
@@ -30,7 +39,7 @@ public class SendMailServiceImpl implements SendMailService {
     private final String context = "感谢你使用Blog系统";
 
     @Override
-    public void sendMail() throws MessagingException {
+    public void sendMail() {
         List<User> userList = userService.list();
         for (User user : userList) {
             String email = user.getEmail();
@@ -42,4 +51,56 @@ public class SendMailServiceImpl implements SendMailService {
             javaMailSender.send(message);
         }
     }
+
+
+    @Value("${spring.mail.username}")
+    private String sendMailer;
+
+    @Autowired
+    private StringRedisTemplate redisTemplate;
+    @Override
+    public Boolean doSendEmailCode(EmailReq emailReq) {
+        String sendTo = emailReq.getSendTo();
+        String subject = emailReq.getSubject();
+        String[] emails = sendTo.split(",");
+        if (StrUtil.isBlank(sendTo) || isEmails(emails)) return false;
+        try {
+            MimeMessage message = javaMailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, true);
+            helper.setFrom(sendMailer);
+            helper.setTo(emails);
+            String code = RandomUtil.randomNumbers(6);
+            switch (subject) {
+                case EmailConstant.EMAIL_CODE:
+                    helper.setSubject("邮箱验证码");
+                    helper.setText(String.format(EmailConstant.EMAIL_CODE_CONTEXT, code), true);
+                    break;
+                case EmailConstant.EMAIL_NOTICE:
+                    helper.setSubject("好消息，好消息!!!!!");
+                    helper.setText(EmailConstant.EMAIL_NOTICE_CONTEXT, true);
+                    break;
+                default:
+                    return false;
+            }
+
+            // TODO 将验证码存入redis，过期时间为5分钟
+            redisTemplate.opsForValue().set(emailReq.getSendTo()+"_code",code);
+
+            javaMailSender.send(message);
+        } catch (MessagingException e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+
+    private boolean isEmails(String... sendTo) {
+        for (String email : sendTo) {
+            if (!Validator.isEmail(email)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
 }

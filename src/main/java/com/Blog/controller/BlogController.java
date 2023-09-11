@@ -54,22 +54,4 @@ public class BlogController {
     public Result<String> deleteBlog(@PathVariable Long id) {
         return blogService.deleteBlog(id);
     }
-
-    //测试接口
-    @GetMapping("/blog/addtest")
-    public Result<String> add() {
-        for (int i = 0; i < 10; i++) {
-            Blog blog = new Blog();
-            blog.setId((long) i + 1000);
-            blog.setCategoryId(1L);
-            blog.setCreated(new Date());
-            blog.setStatus(1);
-            blog.setUserId(1L);
-            blog.setContent("第" + i + "次内容");
-            blog.setDescription("第" + i + "次");
-            blog.setTitle("第" + i + "次");
-            blogService.save(blog);
-        }
-        return Result.success("success");
-    }
 }

@@ -76,4 +76,14 @@ class Tests {
     }
 
 
+    @Test
+    void queryUser1(){
+        String username="admin";
+        String email="111";
+        LambdaQueryWrapper<User> lambdaQueryWrapper=new LambdaQueryWrapper<>();
+        lambdaQueryWrapper.eq(User::getUsername,username).or().eq(User::getEmail,email);
+        User user = userMapper.selectOne(lambdaQueryWrapper);
+        System.out.println(user);
+    }
+
 }

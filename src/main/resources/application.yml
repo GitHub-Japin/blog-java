@@ -1,9 +1,13 @@
 spring:
   profiles:
-   active: pro
+   active: dev2
+  application:
+    name: Blog
 
-login:
-  types:
-    account: accountGranter
-    sms: smsGranter
-    we_chat: weChatGranter
+justauth:
+  config:
+    gitee:
+      # Gitee应用授权
+      client-id: ae5bba91e5e0ec4c7fd76ea7d43b98f0b164131cfd95b0669b0fd2af3bd48f2d
+      client-secret: 9f0f71b2de5346abb494d5c4aaed744491f3ab0176b1cbf068aebd0e2e62f915
+      redirect-uri: http://localhost:8080/api/oauth/gitee/callback
