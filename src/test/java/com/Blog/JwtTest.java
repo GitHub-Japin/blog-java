@@ -118,7 +118,7 @@ public class JwtTest {
     @Test
     public void test4() throws Exception{
         //自定义 随机密码,  请修改这里
-        String password = "itcast";
+        String password = "111111";
 
         KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
         SecureRandom secureRandom = new SecureRandom(password.getBytes());
