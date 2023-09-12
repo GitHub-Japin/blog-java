@@ -1,13 +1,86 @@
+Japin-Config:
+  server_port: 8081
+  profiles_avtive: dev2  #指定配置文件
+  jwt_timeout: 3000
+  jmx_enabled: false #jmx监控Java程序的基本信息和运行情况
+  mail_host: smtp.qq.com
+  mail_user: 1940005020@qq.com
+  mail_pwd: xaipiakcatobehbe
+  gitee_pwd: 9f0f71b2de5346abb494d5c4aaed744491f3ab0176b1cbf068aebd0e2e62f915
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    timeout: 1800000
+
+# 公共配置
+server:
+  port: ${Japin-Config.server_port}
 spring:
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher  # 统一路径匹配规则，解决文档接口报错
   profiles:
-   active: dev2
+   active: ${Japin-Config.profiles_avtive}
   application:
     name: Blog
+  jmx:
+    enabled: ${Japin-Config.jmx_enabled}
+  main:
+    lazy-initialization: true  #bean懒加载
+    allow-bean-definition-overriding: true
+  mail:
+    host: smtp.qq.com
+    username: 1940005020@qq.com
+    password: ${Japin-Config.mail_pwd}
+  task:
+    scheduling:
+      thread-name-prefix: spring_tasks_  # 调度线程名称前缀 默认 scheduling-
+      shutdown:
+        await-termination: false # 线程池关闭时等待所有任务完成
+        await-termination-period: 10s # 调度线程关闭前最大等待时间，确保最后一定关闭
+  redis:
+    host: ${Japin-Config.redis.host}
+    port: ${Japin-Config.redis.port}
+    #    password:
+    database: 0
+  cache:
+    redis:
+      time-to-live: ${Japin-Config.redis.timeout} #缓冲有效时间
 
+
+## Swagger
+blog:
+  swagger:
+    enabled: true #是否启用swagger
+    docket:
+      user:
+        title: 模块
+        base-package: com.Blog.controller
+
+
+mybatis-plus:
+  #  configuration:
+  #    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  #    map-underscore-to-camel-case: true #默认就是true
+  #    config-location: classpath:mybatis-config.xml
+  mapper-locations: classpath*:/mapper/**Mapper.xml
+  global-config:
+    db-config:
+      #      table-prefix: zb_   #表名映射
+      logic-delete-value: 1  #逻辑删除是
+      logic-not-delete-value: 0 #逻辑删除否
+
+jwt:
+  configuration:
+    expire: ${Japin-Config.jwt_timeout}
+    secret: thisismysecret
+
+
+## justauth
 justauth:
   config:
     gitee:
       # Gitee应用授权
       client-id: ae5bba91e5e0ec4c7fd76ea7d43b98f0b164131cfd95b0669b0fd2af3bd48f2d
-      client-secret: 9f0f71b2de5346abb494d5c4aaed744491f3ab0176b1cbf068aebd0e2e62f915
-      redirect-uri: http://localhost:8080/api/oauth/gitee/callback
+      client-secret: ${Japin-Config.gitee_pwd}
+      redirect-uri: http://localhost:8081/oauth/gitee/callback

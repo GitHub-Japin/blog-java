@@ -1,6 +1,6 @@
 package com.Blog.service;
 
-import com.Blog.model.dto.EmailReq;
+import com.Blog.model.dto.login.EmailReq;
 
 import javax.mail.MessagingException;
 

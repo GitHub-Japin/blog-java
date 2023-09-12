@@ -20,7 +20,7 @@ import org.springframework.util.StringUtils;
 public class LogServiceImpl extends ServiceImpl<LogMapper, OptLog> implements LogService {
     @Override
     @RequiresAuthentication
-    @MyLog(name = "日志分页请求")
+//    @MyLog(name = "日志分页请求")
     public Result<Page<OptLog>> page(int currentPage, int pageSize, String title) {
         Page<OptLog> page = new Page<>(currentPage, pageSize);
         LambdaQueryWrapper<OptLog> queryWrapper = new LambdaQueryWrapper<>();

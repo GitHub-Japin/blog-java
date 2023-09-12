@@ -4,7 +4,7 @@ import com.Blog.annotation.MyLog;
 import com.Blog.common.Result;
 import com.Blog.dao.BlogMapper;
 import com.Blog.model.pojo.Blog;
-import com.Blog.model.dto.BlogDto;
+import com.Blog.model.dto.blog.BlogDto;
 import com.Blog.model.pojo.Category;
 import com.Blog.model.pojo.User;
 import com.Blog.service.BlogService;

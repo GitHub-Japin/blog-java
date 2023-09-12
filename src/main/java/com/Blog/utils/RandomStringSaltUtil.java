@@ -1,8 +1,8 @@
-package com.Blog.common;
+package com.Blog.utils;
 
 import java.util.Random;
 
-public class RandomStringSalt {
+public class RandomStringSaltUtil {
     public static String generateRandomString(int length) {
         String characters = "AaBbCcDdEdFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz0123456789";
         StringBuilder sb = new StringBuilder(length);

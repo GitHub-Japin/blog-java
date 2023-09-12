@@ -1,4 +1,4 @@
-package com.Blog.model.dto;
+package com.Blog.model.dto.login;
 
 import com.Blog.constants.EmailConstant;
 import lombok.Data;

@@ -1,8 +1,7 @@
-package com.Blog.jwt;
+package com.Blog.sercurity.jwt;
 
 
 import com.Blog.common.Result;
-import com.Blog.common.ThreadLocalUtil;
 import com.Blog.constants.ResultConstant;
 import com.alibaba.fastjson.JSON;
 import io.jsonwebtoken.Claims;

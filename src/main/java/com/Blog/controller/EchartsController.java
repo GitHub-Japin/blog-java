@@ -1,8 +1,7 @@
 package com.Blog.controller;
 
 import com.Blog.common.Result;
-import com.Blog.model.dto.Echarts;
-import com.Blog.model.dto.UserEcharts;
+import com.Blog.model.dto.echarts.Echarts;
 import com.Blog.service.EchartsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,7 +22,7 @@ public class EchartsController {
     }
 
     @GetMapping("/userEcharts")
-    public Result<List<UserEcharts>> getUserEcharts(){
+    public Result<List<Echarts>> getUserEcharts(){
         return echartsService.getUserEcharts();
     }
 }

@@ -6,14 +6,11 @@ import cn.hutool.core.lang.Validator;
 import com.Blog.annotation.MyLog;
 import com.Blog.common.CustomException;
 import com.Blog.constants.LoginStrategyConstant;
-import com.Blog.constants.ResultConstant;
-import com.Blog.model.dto.EmailLoginReq;
-import com.Blog.model.dto.LoginDto;
+import com.Blog.model.dto.login.EmailLoginDto;
 import com.Blog.common.Result;
-import com.Blog.model.dto.UserNameLoginReq;
-import com.Blog.model.dto.UserRegisterReq;
+import com.Blog.model.dto.login.UserNameLoginDto;
+import com.Blog.model.dto.user.UserRegisterDto;
 import com.Blog.model.pojo.User;
-import com.Blog.service.SendMailService;
 import com.Blog.service.UserService;
 import com.Blog.strategy.core.AbstractStrategyChoose;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -35,16 +32,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.List;
 
-//账号的登录和退出
 @Api("用户登录与注册")
 @RequiredArgsConstructor
 @RestController
 public class AccountController {
     private final AbstractStrategyChoose strategyChoose;
 
-    private final SendMailService sendMailService;
     @Autowired
     private UserService userService;
 
@@ -54,19 +48,18 @@ public class AccountController {
         return userService.loginWithSalt(loginDto, response);
     }*/
 
-
+    @ApiOperation("用户名登录")
     @PostMapping("/login")
-    public Boolean userLogin(@RequestBody @Valid UserNameLoginReq userNameLoginReq) {
-        return strategyChoose.chooseAndExecuteResp(LoginStrategyConstant.USERNAME_LOGIN_MARK, userNameLoginReq);
+    public Result<User> userLogin(@RequestBody @Valid UserNameLoginDto loginDto) {
+        return Result.success(strategyChoose.chooseAndExecuteResp(LoginStrategyConstant.USERNAME_LOGIN_MARK, loginDto));
     }
 
+    @ApiOperation("邮箱登录")
     @PostMapping("/email/login")
-    public Boolean userLoginByEmail(@RequestBody @Valid EmailLoginReq emailLoginReq) {
-        return strategyChoose.chooseAndExecuteResp(LoginStrategyConstant.EMAIL_LOGIN_MARK, emailLoginReq);
+    public Boolean userLoginByEmail(@RequestBody @Valid EmailLoginDto emailLoginDto) {
+        return strategyChoose.chooseAndExecuteResp(LoginStrategyConstant.EMAIL_LOGIN_MARK, emailLoginDto);
     }
 
-
-    // Captcha验证码 参考{https://blog.csdn.net/netuser1937/article/details/131127004}
     @ApiOperation("生成验证码")
     @GetMapping("/verify")
     public void verify(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -78,24 +71,25 @@ public class AccountController {
         ShearCaptcha shearCaptcha = CaptchaUtil.createShearCaptcha(150, 40, 5, 4);
         shearCaptcha.write(response.getOutputStream());//图形验证码写出，可以写出到文件，也可以写出到流
         // 用于后续验证用户输入验证码是否正确，用完可以移除
-        request.getSession().setAttribute("verifyCode",shearCaptcha.getCode());
+        request.getSession().setAttribute("verifyCode", shearCaptcha.getCode());
     }
 
     @Autowired
     private StringRedisTemplate redisTemplate;
 
+    @ApiOperation("用户注册")
     @PostMapping("/register")
-    public Boolean userRegister(@RequestBody @Valid UserRegisterReq userRegisterReq) {
+    public Boolean userRegister(@RequestBody @Valid UserRegisterDto userRegisterDto) {
         //TODO 转移到service中
-        String password = userRegisterReq.getPassword();
-        String checkPassword = userRegisterReq.getCheckPassword();
+        String password = userRegisterDto.getPassword();
+        String checkPassword = userRegisterDto.getCheckPassword();
         //校验两次密码是否一致
         if (!password.equals(checkPassword)) {
             return false;
         }
 
-        String username = userRegisterReq.getUsername();
-        String mail = userRegisterReq.getMail();
+        String username = userRegisterDto.getUsername();
+        String mail = userRegisterDto.getMail();
         if (!Validator.isEmail(mail)) return false;
         //TODO 查询数据库校验用户名和mail已被注册
         LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
@@ -107,20 +101,21 @@ public class AccountController {
 
         //TODO Redis校验验证码
         //Redis key:email_code:邮箱  value: code
-        String code = userRegisterReq.getEmailCode();
+        String code = userRegisterDto.getEmailCode();
         String codeValue = redisTemplate.opsForValue().get(mail + "_code");
-        if (!codeValue.equals(code)){
+        if (!codeValue.equals(code)) {
             throw new CustomException("验证码错误");
         }
 
         //TODO 插入数据库，如果成功删除Redis中验证码
         redisTemplate.delete(mail + "_code");
-        User targetUser =new User();
-        BeanUtils.copyProperties(targetUser, userRegisterReq);
+        User targetUser = new User();
+        BeanUtils.copyProperties(targetUser, userRegisterDto);
         userService.saveUser(targetUser);
 
         return true;
     }
+
     @RequiresAuthentication
     @PostMapping("/logout")
     @MyLog(name = "账号退出")

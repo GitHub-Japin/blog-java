@@ -1,10 +1,8 @@
 package com.Blog.controller;
 
 import com.Blog.config.JustAuthProperties;
-import com.Blog.constants.ResultConstant;
 import com.Blog.model.pojo.User;
 import com.Blog.service.UserService;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
 import me.zhyd.oauth.config.AuthConfig;
@@ -16,7 +14,6 @@ import me.zhyd.oauth.request.AuthGiteeRequest;
 import me.zhyd.oauth.request.AuthRequest;
 import me.zhyd.oauth.utils.AuthScopeUtils;
 import me.zhyd.oauth.utils.AuthStateUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -46,28 +43,29 @@ public class OauthController {
         AuthUser oauthUser = (AuthUser) authResponse.getData();
         String username = oauthUser.getUsername();
         String email = oauthUser.getEmail();
-        //TODO 随机给用户设置密码，并插入数据库
 
-        LambdaQueryWrapper<User> lambdaQueryWrapper=new LambdaQueryWrapper<>();
+        //TODO 随机给用户设置密码，并插入数据库
+        /*LambdaQueryWrapper<User> lambdaQueryWrapper=new LambdaQueryWrapper<>();
         lambdaQueryWrapper.eq(User::getUsername,username).or().eq(User::getEmail,email);
         User userExit = userService.getOne(lambdaQueryWrapper);
         if (userExit != null){
             return ResultConstant.UserExistMsg;
-        }
+        }*/
         User user = new User();
-        user.setUsername(username);
+        user.setEmail(email);
+        user.setUsername("Gitee_"+username);
         user.setPassword("111111");
         userService.saveUser(user);
 
-        return authRequest.login(callback);
+        return authResponse;
     }
 
-    private AuthRequest getAuthRequest() {
+    private AuthRequest getAuthRequest() {//创建Request
         return new AuthGiteeRequest(AuthConfig.builder()
-                .clientId(justAuthProperties.getClientId())
-                .clientSecret(justAuthProperties.getClientSecret())
-                .redirectUri(justAuthProperties.getRedirectUri())
-                .scopes(AuthScopeUtils.getScopes(AuthGiteeScope.USER_INFO,AuthGiteeScope.EMAILS))
+                .clientId(justAuthProperties.getClientId())//客户端ID
+                .clientSecret(justAuthProperties.getClientSecret())//客户端密钥
+                .redirectUri(justAuthProperties.getRedirectUri())//重定向地址
+                .scopes(AuthScopeUtils.getScopes(AuthGiteeScope.USER_INFO,AuthGiteeScope.EMAILS))//设置信息
                 .build());
     }
 

@@ -21,7 +21,7 @@ public class AbstractStrategyChoose implements ApplicationContextAware, Initiali
     private ApplicationContext applicationContext;
 
     @Override
-    public void afterPropertiesSet() throws Exception {
+    public void afterPropertiesSet() {
         Map<String, AbstractExecuteStrategy> executeStrategyMap = applicationContext.getBeansOfType(AbstractExecuteStrategy.class);
         executeStrategyMap.forEach((beanName,bean)->{
             if(abstractExecuteStrategyMap.containsKey(bean.mark())){
@@ -32,6 +32,7 @@ public class AbstractStrategyChoose implements ApplicationContextAware, Initiali
     }
 
     public AbstractExecuteStrategy choose(String mark) {
+        //Optional.ofNullable不管value值存不存在，ofNullable(...)方法都不会抛出空指针异常。
         return Optional.ofNullable(abstractExecuteStrategyMap.get(mark))
                 .orElseThrow(() -> new RuntimeException(String.format("[%s] 策略未定义", mark)));
     }

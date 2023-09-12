@@ -17,13 +17,12 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 public class SwaggerAutoConfiguration {
     @Bean
     public Docket createRestApi1() {
-        Docket docket = new Docket(DocumentationType.SWAGGER_2)
+        return new Docket(DocumentationType.SWAGGER_2)
                 .apiInfo(apiInfo()).groupName("接口组")
                 .select()
                 //为当前包路径
                 .apis(RequestHandlerSelectors.basePackage("com.Blog.controller"))
                 .build();
-        return docket;
     }
 
     //构建 api文档的详细信息

@@ -2,7 +2,7 @@ package com.Blog.strategy;
 
 import com.Blog.common.CustomException;
 import com.Blog.constants.LoginStrategyConstant;
-import com.Blog.model.dto.EmailLoginReq;
+import com.Blog.model.dto.login.EmailLoginDto;
 import com.Blog.strategy.core.AbstractExecuteStrategy;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 
 @Component
 @RequiredArgsConstructor
-public class EmailLoginStrategy implements AbstractExecuteStrategy<EmailLoginReq,Boolean> {
+public class EmailLoginStrategy implements AbstractExecuteStrategy<EmailLoginDto,Boolean> {
 
     private final HttpServletRequest request;
 
@@ -27,7 +27,7 @@ public class EmailLoginStrategy implements AbstractExecuteStrategy<EmailLoginReq
     }
 
     @Override
-    public Boolean executeResp(EmailLoginReq requestParam) {
+    public Boolean executeResp(EmailLoginDto requestParam) {
 
         //TODO 将验证码取出，与Redis中的进行对比，一致则登录成功，删除Redis验证码
         String value = redisTemplate.opsForValue().get(requestParam.getEmail() + "_code");

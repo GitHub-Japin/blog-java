@@ -3,10 +3,11 @@ package com.Blog.service.Impl;
 import com.Blog.annotation.MyLog;
 import com.Blog.common.Result;
 import com.Blog.dao.EchartsMapper;
-import com.Blog.model.dto.UserEcharts;
+import com.Blog.model.dto.echarts.CategoryEchartsDto;
+import com.Blog.model.dto.echarts.UserEcharts;
 import com.Blog.model.pojo.Blog;
 import com.Blog.model.pojo.Category;
-import com.Blog.model.dto.Echarts;
+import com.Blog.model.dto.echarts.Echarts;
 import com.Blog.model.pojo.User;
 import com.Blog.service.BlogService;
 import com.Blog.service.CategoryService;
@@ -47,10 +48,10 @@ public class EchartsServiceImpl extends ServiceImpl<EchartsMapper, Echarts> impl
         List<Echarts> echartsList = new ArrayList<>();
         List<Category> categoryList = categoryService.list();//查出所有分类
         map.forEach((k,v)->{
-            Echarts echarts = new Echarts();
+            Echarts echarts = new CategoryEchartsDto();//多态
             for (Category category :categoryList){
                 if (k.equals(category.getId())){
-                    echarts.setCategoryName(category.getCategoryname());
+                    echarts.setName(category.getCategoryname());
                     echarts.setCount(map.get(k));
                 }
             }
@@ -62,7 +63,7 @@ public class EchartsServiceImpl extends ServiceImpl<EchartsMapper, Echarts> impl
     @Override
 //    @RequiresAuthentication
     @MyLog(name = "用户发表博客数量统计请求")
-    public Result<List<UserEcharts>> getUserEcharts() {
+    public Result<List<Echarts>> getUserEcharts() {
         QueryWrapper<Blog> blogWrapper = new QueryWrapper<>();
         blogWrapper.select("id","user_id");
         List<Blog> blogList = blogService.list(blogWrapper);
@@ -70,13 +71,13 @@ public class EchartsServiceImpl extends ServiceImpl<EchartsMapper, Echarts> impl
         for(Blog blog : blogList){
             map.put(blog.getUserId(),map.getOrDefault(blog.getUserId(),0)+1);
         }
-        List<UserEcharts> echartsList = new ArrayList<>();
+        List<Echarts> echartsList = new ArrayList<>();
         List<User> userList = userService.list();//查出所有用户
         map.forEach((k,v)->{
-            UserEcharts echarts = new UserEcharts();
+            Echarts echarts = new UserEcharts();
             for (User user :userList){
                 if (k.equals(user.getId())){
-                    echarts.setUserName(user.getUsername());
+                    echarts.setName(user.getUsername());
                     echarts.setCount(map.get(k));
                 }
             }

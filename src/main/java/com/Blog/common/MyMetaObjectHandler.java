@@ -13,7 +13,7 @@ public class MyMetaObjectHandler implements MetaObjectHandler {
      */
     @Override
     public void insertFill(MetaObject metaObject) {
-        // 先获取到password的值，再进行判断，如果为空，就进行填充，如果不为空，就不做处理
+        // 先获取到deleted的值，再进行判断，如果为空，就进行填充，如果不为空，就不做处理
         Object deleted = getFieldValByName("deleted", metaObject);
         if(null == deleted){
            setFieldValByName("deleted", "0", metaObject);

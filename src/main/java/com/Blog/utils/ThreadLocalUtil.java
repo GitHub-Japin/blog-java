@@ -1,4 +1,4 @@
-package com.Blog.common;
+package com.Blog.utils;
 
 public class ThreadLocalUtil {
     private static final ThreadLocal<Long> THREAD_LOCAL = new ThreadLocal<>();

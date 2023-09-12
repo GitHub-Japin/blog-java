@@ -5,7 +5,7 @@ import cn.hutool.core.lang.Validator;
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
 import com.Blog.constants.EmailConstant;
-import com.Blog.model.dto.EmailReq;
+import com.Blog.model.dto.login.EmailReq;
 import com.Blog.model.pojo.User;
 import com.Blog.service.SendMailService;
 import com.Blog.service.UserService;

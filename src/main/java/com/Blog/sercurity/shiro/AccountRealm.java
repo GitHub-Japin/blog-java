@@ -1,9 +1,8 @@
-package com.Blog.shiro;
+package com.Blog.sercurity.shiro;
 
-import com.Blog.common.ThreadLocalUtil;
 import com.Blog.constants.ResultConstant;
-import com.Blog.jwt.JwtToken;
-import com.Blog.jwt.JwtUtil;
+import com.Blog.sercurity.jwt.JwtToken;
+import com.Blog.sercurity.jwt.JwtUtil;
 import com.Blog.model.pojo.User;
 import com.Blog.service.UserService;
 import org.apache.shiro.authc.*;

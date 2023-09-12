@@ -1,4 +1,4 @@
-package com.Blog.model.dto;
+package com.Blog.model.dto.login;
 
 
 import lombok.Data;
@@ -6,7 +6,7 @@ import lombok.Data;
 import javax.validation.constraints.NotBlank;
 
 @Data
-public class EmailLoginReq {
+public class EmailLoginDto {
 
     @NotBlank(message = "邮箱不能为空")
     private String email;

@@ -1,4 +1,4 @@
-package com.Blog.jwt;
+package com.Blog.sercurity.jwt;
 
 import org.apache.shiro.authc.AuthenticationToken;
 

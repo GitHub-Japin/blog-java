@@ -1,4 +1,4 @@
-package com.Blog.jwt;
+package com.Blog.sercurity.jwt;
 
 
 //由于使用JwtToken，不是使用Shiro所提供的UsernamePasswordToken

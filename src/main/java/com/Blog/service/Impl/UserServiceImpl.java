@@ -4,13 +4,13 @@ import cn.afterturn.easypoi.excel.ExcelExportUtil;
 import cn.afterturn.easypoi.excel.entity.ExportParams;
 import cn.afterturn.easypoi.excel.entity.enmus.ExcelType;
 import com.Blog.annotation.MyLog;
-import com.Blog.common.RandomStringSalt;
+import com.Blog.common.CustomException;
+import com.Blog.utils.RandomStringSaltUtil;
 import com.Blog.common.Result;
-import com.Blog.common.ThreadLocalUtil;
 import com.Blog.constants.ResultConstant;
 import com.Blog.dao.UserMapper;
-import com.Blog.jwt.JwtUtil;
-import com.Blog.model.dto.LoginDto;
+import com.Blog.sercurity.jwt.JwtUtil;
+import com.Blog.model.dto.login.UserNameLoginDto;
 import com.Blog.model.pojo.User;
 import com.Blog.service.UserService;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -18,6 +18,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
@@ -25,7 +26,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.DigestUtils;
-import org.springframework.util.StringUtils;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
@@ -33,57 +33,70 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Random;
 
 @Slf4j
 @Service
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService {
-
-    @Autowired
-    private UserMapper userMapper;
     @Autowired
     private JwtUtil jwtUtil;
 
-    @Override
-    public Result<User> login(LoginDto loginDto, HttpServletResponse response) {
-        QueryWrapper<User> qw = new QueryWrapper<>();
-        qw.eq("username", loginDto.getUsername());
-        User user = getOne(qw);
-        if (user == null) {
-            return Result.error(ResultConstant.AccountNotExist);
+    private Boolean IsUserExists(String username) {
+        LambdaQueryWrapper<User> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+        lambdaQueryWrapper.eq(User::getUsername, username);/*select * from user where id= ''得到整行数据*/
+        User user = getOne(lambdaQueryWrapper);//原本数据库对象
+        return user != null;
+    }
+    private User QueryUser(String username) {
+        LambdaQueryWrapper<User> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+        lambdaQueryWrapper.eq(User::getUsername, username);/*select * from user where id= ''得到整行数据*/
+        return getOne(lambdaQueryWrapper);
+    }
+
+    // 把这里改成返回User，前端才能拿到数据
+    public User loginWithSalt1(UserNameLoginDto loginDto, HttpServletResponse response) {
+        if (StringUtils.isEmpty(loginDto.getUsername())
+                || StringUtils.isEmpty(loginDto.getPassword())) {
+            throw new CustomException(ResultConstant.FailMsg);
+//            return Result.error(ResultConstant.FailMsg);
         }
-        String password = DigestUtils.md5DigestAsHex(loginDto.getPassword().getBytes());
-        if (!user.getPassword().equals(password)) {
-            return Result.error(ResultConstant.PasswordNotCorrect);
+        User user = QueryUser(loginDto.getUsername());
+        if (user == null || user.getDeleted() == 1) {
+            throw new CustomException(ResultConstant.FailMsg);
+//            return Result.error(ResultConstant.AccountNotExist);
         }
-        if(user.getStatus().equals(ResultConstant.AccountLockCode)){
-            return Result.error(ResultConstant.AccountLock);
+        if (user.getStatus().equals(ResultConstant.AccountLockCode)) {
+            throw new CustomException(ResultConstant.FailMsg);
+//            return Result.error(ResultConstant.AccountLock);
+        }
+        String password = DigestUtils.md5DigestAsHex((loginDto.getPassword() + user.getSalt()).getBytes());
+        if (!password.equals(user.getPassword())) {
+            throw new CustomException(ResultConstant.FailMsg);
+//            return Result.error(ResultConstant.PasswordNotCorrect);
         }
         String jwt = jwtUtil.generateToken(user.getId());
         response.setHeader("Authorization", jwt);
-        //ThreadLocalUtil.setData(user.getId());
-        //ThreadLocalUtil.setMap(user.getId(),user.getUsername());
-        return Result.success(user);
+        //salt与密码不返回前端
+        user.setSalt("");
+        user.setPassword("");
+
+        return user;
     }
 
     @Override
-    public Result<User> loginWithSalt(LoginDto loginDto, HttpServletResponse response) {
-        if(loginDto.getUsername()==null||loginDto.getPassword()==null
-                ||StringUtils.isEmpty(loginDto.getUsername())
-                || StringUtils.isEmpty(loginDto.getPassword())){
+    public Result<User> loginWithSalt(UserNameLoginDto loginDto, HttpServletResponse response) {
+        if (StringUtils.isEmpty(loginDto.getUsername())
+                || StringUtils.isEmpty(loginDto.getPassword())) {
             return Result.error(ResultConstant.FailMsg);
         }
-        LambdaQueryWrapper<User> queryWrapper=new LambdaQueryWrapper<>();
-        queryWrapper.eq(User::getUsername, loginDto.getUsername());
-        User user=getOne(queryWrapper);
-        if (user==null||user.getDeleted()==1){
+        User user = QueryUser(loginDto.getUsername());
+        if (user == null || user.getDeleted() == 1) {
             return Result.error(ResultConstant.AccountNotExist);
         }
-        if(user.getStatus().equals(ResultConstant.AccountLockCode)){
+        if (user.getStatus().equals(ResultConstant.AccountLockCode)) {
             return Result.error(ResultConstant.AccountLock);
         }
-        String password = DigestUtils.md5DigestAsHex((loginDto.getPassword()+user.getSalt()).getBytes());
-        if (!password.equals(user.getPassword())){
+        String password = DigestUtils.md5DigestAsHex((loginDto.getPassword() + user.getSalt()).getBytes());
+        if (!password.equals(user.getPassword())) {
             return Result.error(ResultConstant.PasswordNotCorrect);
         }
         String jwt = jwtUtil.generateToken(user.getId());
@@ -98,7 +111,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     @Override
     public Result<String> logout() {
         SecurityUtils.getSubject().logout();
-        ThreadLocalUtil.clean();
         return Result.success(ResultConstant.AccountLogout);
     }
 
@@ -106,14 +118,16 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     @MyLog(name = "用户分页请求")
     public Result<Page<User>> page(int currentPage, int pageSize, String name) {
         Page<User> page = new Page<>(currentPage, pageSize);
-        LambdaQueryWrapper<User> lqw = new LambdaQueryWrapper<>();
-        lqw.like(StringUtils.hasLength(name), User::getUsername, name);
-        return Result.success(page(page, lqw));
+        LambdaQueryWrapper<User> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+        if (!StringUtils.isEmpty(name)) {
+            lambdaQueryWrapper.like(User::getUsername, name);
+        }
+        return Result.success(page(page, lambdaQueryWrapper));
     }
 
     @Override
     @Transactional
-    @RequiresAuthentication
+    @RequiresAuthentication//等同于方法subject.isAuthenticated() 结果为true时。
     @MyLog(name = "用户状态更新请求")
     public Result<String> updateStatus(Long id, int status) {
         User user = getById(id);
@@ -136,21 +150,23 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     @Override
     @Transactional
-    @RequiresAuthentication
+//    @RequiresAuthentication
     @MyLog(name = "用户注册请求")
     public Result<String> saveUser(User user) {
-        String salt = RandomStringSalt.generateRandomString(5);
-        LambdaQueryWrapper<User> lqw = new LambdaQueryWrapper<>();
-        lqw.eq(User::getUsername, user.getUsername());/*select * from user where username= ''*/
-        User users = getOne(lqw);//原本数据库对象
-        if (users !=null){
+        Boolean isUserExists = IsUserExists(user.getUsername());
+        if (isUserExists){
             return Result.error(ResultConstant.UserExistMsg);
         }
+        String salt = RandomStringSaltUtil.generateRandomString(5);
         user.setSalt(salt);
-        user.setPassword(DigestUtils.md5DigestAsHex(user.getPassword().getBytes()));
+        user.setPassword(DigestUtils.md5DigestAsHex((user.getPassword()+salt).getBytes()));
         user.setStatus(ResultConstant.AccountUnLockCode);
         user.setCreated(LocalDateTime.now());
-        save(user);
+        user.setAvatar("https://image-1300566513.cos.ap-guangzhou.myqcloud.com/upload/images/5a9f48118166308daba8b6da7e466aab.jpg");
+        boolean IsSave = save(user);
+        if (!IsSave) {
+            return Result.error(ResultConstant.FailMsg);
+        }
         return Result.success(ResultConstant.SuccessMsg);
     }
 
@@ -159,31 +175,25 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     @RequiresAuthentication
     @MyLog(name = "用户更新请求")
     public Result<String> updateUser(User user) {
-        //传入name、email、avatar、password、除id、created、status
         //log.error("传入用户为：{}",user);
-        LambdaQueryWrapper<User> lqw = new LambdaQueryWrapper<>();
-        lqw.eq(User::getUsername, user.getUsername());/*select * from user where username= ''得到整行数据*/
-        User initUser = getOne(lqw);//原本数据库对象
-        if (initUser ==null){
+        User initUser = QueryUser(user.getUsername());
+        if (initUser == null) {
             return Result.error(ResultConstant.UserNotExitMsg);
         }
-        if(initUser.getUsername().equals(user.getUsername())
+        String salt = initUser.getSalt();
+        if (initUser.getUsername().equals(user.getUsername())
                 && initUser.getAvatar().equals(user.getAvatar())
                 && initUser.getEmail().equals(user.getEmail())
-                && initUser.getPassword().equals(DigestUtils.md5DigestAsHex(user.getPassword().getBytes()))){
+                && initUser.getPassword().equals(DigestUtils.md5DigestAsHex((user.getPassword()+salt).getBytes()))) {
             return Result.error(ResultConstant.FailMsg);
         }
         initUser.setUsername(user.getUsername());
-
-//        if(initUser.getUsername().equals(initUser.getUsername())){
-//            return Result.error("当前用户名已存在，更新失败");
-//        }
         initUser.setAvatar(user.getAvatar());
         initUser.setEmail(user.getEmail());
-        initUser.setPassword(DigestUtils.md5DigestAsHex(user.getPassword().getBytes()));
-        if(updateById(initUser)){
+        initUser.setPassword(DigestUtils.md5DigestAsHex((user.getPassword()+salt).getBytes()));
+        if (updateById(initUser)) {
             return Result.success(ResultConstant.SuccessMsg);
-        }else {
+        } else {
             return Result.error(ResultConstant.FailMsg);
         }
     }
@@ -193,17 +203,14 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     public void downLoadXlsxWithEayPoi(HttpServletRequest request, HttpServletResponse response) {
         //查询用户数据
         try {
-            List<User> userList = userMapper.selectList(new QueryWrapper<>());
+            List<User> userList = list(new QueryWrapper<>());
             //指定导出的格式是高版本的格式
             ExportParams exportParams = new ExportParams("员工信息", "数据", ExcelType.XSSF);
-            //        直接使用EasyPOI提供的方法
+            //直接使用EasyPOI提供的方法
             Workbook workbook = ExcelExportUtil.exportExcel(exportParams, User.class, userList);
-            String filename = "用户信息.xlsx";
-            //            设置文件的打开方式和mime类型
-            ServletOutputStream outputStream = null;
-
-            outputStream = response.getOutputStream();
-
+            String filename = "Blog用户信息表.xlsx";
+            //设置文件的打开方式和mime类型
+            ServletOutputStream outputStream = response.getOutputStream();
             response.setHeader("Content-Disposition", "attachment;filename=" + new String(filename.getBytes(), "ISO8859-1"));
             response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
             workbook.write(outputStream);

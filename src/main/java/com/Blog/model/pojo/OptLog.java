@@ -22,7 +22,7 @@ public class OptLog implements Serializable {
     private String uri;                 // 请求地址
     private String restfulName;         // 请求方式method,post,get等
 
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")//格式化时间
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss", timezone="GMT+8")
     private Date time;                 // 请求时间
 
     private String httpStatusCode;     // 请求时httpStatusCode代码，如：200,400,404等

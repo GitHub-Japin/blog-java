@@ -1,13 +1,11 @@
 package com.Blog.config;
 
-import com.Blog.jwt.JwtFilter;
-import com.Blog.shiro.AccountRealm;
+import com.Blog.sercurity.jwt.JwtFilter;
+import com.Blog.sercurity.shiro.AccountRealm;
 import org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -42,6 +40,7 @@ public class ShiroConfig {
         factoryBean.setFilters(filterMap);
         //配置拦截器拦截的路径
         Map<String, String> map = new LinkedHashMap<>();
+        map.put("/oauth/**","anon");
         map.put("/**", "jwt");
         factoryBean.setFilterChainDefinitionMap(map);
         return factoryBean;

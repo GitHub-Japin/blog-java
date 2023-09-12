@@ -86,4 +86,15 @@ class Tests {
         System.out.println(user);
     }
 
+    @Test
+    void queryUser2(){//只查指定字段
+        String username="admin";
+        String email="111";
+        LambdaQueryWrapper<User> lambdaQueryWrapper=new LambdaQueryWrapper<>();
+        lambdaQueryWrapper.eq(User::getUsername,username).or().eq(User::getEmail,email);
+        lambdaQueryWrapper.select(User::getUsername,User::getId);
+        User user = userMapper.selectOne(lambdaQueryWrapper);
+        System.out.println(user);
+    }
+
 }

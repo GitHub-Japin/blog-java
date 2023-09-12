@@ -1,6 +1,6 @@
 package com.Blog.controller;
 
-import com.Blog.model.dto.EmailReq;
+import com.Blog.model.dto.login.EmailReq;
 import com.Blog.service.SendMailService;
 import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;

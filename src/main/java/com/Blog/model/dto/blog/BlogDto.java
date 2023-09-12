@@ -1,4 +1,4 @@
-package com.Blog.model.dto;
+package com.Blog.model.dto.blog;
 
 import com.Blog.model.pojo.Blog;
 import io.swagger.annotations.ApiModel;

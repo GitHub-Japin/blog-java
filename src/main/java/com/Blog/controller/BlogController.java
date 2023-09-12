@@ -2,13 +2,12 @@ package com.Blog.controller;
 
 import com.Blog.common.Result;
 import com.Blog.model.pojo.Blog;
-import com.Blog.model.dto.BlogDto;
+import com.Blog.model.dto.blog.BlogDto;
 import com.Blog.service.BlogService;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.*;
-import java.util.Date;
 
 @Repository
 @RestController
@@ -26,7 +25,6 @@ public class BlogController {
     public Result<Page<BlogDto>> serverPage(int currentPage, int pageSize, String title) {
         return blogService.serverPage(currentPage, pageSize, title);
     }
-
 
     @GetMapping("/blog/{id}")
     public Result<Blog> ViewDetails(@PathVariable Long id) {
