@@ -12,6 +12,22 @@ Japin-Config:
     port: 6379
     timeout: 1800000
 
+# 开启debug模式，输出调试信息，常用于检查系统运行状况
+debug: true
+
+# 设置日志级别，root表示根节点，即整体应用日志级别
+logging:
+  level:
+    root: debug
+#  file:
+#    name: server.log
+#  logback:
+#    rollingpolicy:
+#      max-file-size: 3KB
+#      file-name-pattern: server.%d{yyyy-MM-dd}.%i.log
+#  pattern:
+#    console: "%d %clr(%p) --- [%16t] %clr(%-40.40c){cyan} : %m %n"
+
 # 公共配置
 server:
   port: ${Japin-Config.server_port}
@@ -26,7 +42,7 @@ spring:
   jmx:
     enabled: ${Japin-Config.jmx_enabled}
   main:
-    lazy-initialization: true  #bean懒加载
+    lazy-initialization: true  #bean懒加载，防止服务层循环注入
     allow-bean-definition-overriding: true
   mail:
     host: smtp.qq.com

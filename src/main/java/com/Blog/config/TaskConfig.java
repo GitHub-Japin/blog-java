@@ -13,9 +13,9 @@ public class TaskConfig {
     @Autowired
     private SendMailService sendMailService;
     /**
-     * 每天0点执行
+     * 每天0点执行，秒、分钟、小时、天、月和星期
      */
-    @Scheduled(cron = "0 0 0 * * ? *")
+    @Scheduled(cron = "0 0 0 * * ?")
     public void sendMail() throws MessagingException {
         sendMailService.sendMail();
     }

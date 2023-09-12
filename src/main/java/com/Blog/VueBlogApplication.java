@@ -18,7 +18,7 @@ import java.net.InetAddress;
 @SpringBootApplication
 @EnableCaching//开启缓冲注解功能
 @EnableScheduling//开启定时任务功能
-//@MapperScan("com.Blog.dao")
+@MapperScan("com.Blog.dao")
 public class VueBlogApplication {
     public static void main(String[] args) throws Exception {
         ConfigurableApplicationContext context = SpringApplication.run(VueBlogApplication.class, args);
