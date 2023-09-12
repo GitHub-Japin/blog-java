@@ -79,6 +79,7 @@
                 </exclusion>
             </exclusions>
         </dependency>
+        <!--JAXB 可以实现Java对象与XML的相互转换-->
         <dependency>
             <groupId>javax.xml.bind</groupId>
             <artifactId>jaxb-api</artifactId>

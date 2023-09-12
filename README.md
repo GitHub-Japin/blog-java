@@ -1,6 +1,10 @@
 <p align="center"></p>
-<h1 align="center" style="margin: 30px 0 30px; font-weight: bold;">基于SpringBoot+Vue的多人Blog设计</h1>
-<h4 align="center">此项目基于SpringBoot + Apache Shiro + jwt + mybatis/Mybatis Plus + redis + mysql + EasyExcel</h4>
+<h1 align="center" style="margin: 30px 0 30px; font-weight: bold;">基于Spring Boot+Vue的多人Blog设计</h1>
+<h4 align="center">此项目前端基于Vue + ElementUI + Echarts + Axios</h4>
+<h4 align="center">此项目后端基于Spring Boot</h4>
+<h5 align="center">安全框架：Shiro + JWT(HS256) </h5> 
+<h5 align="center">DB/持久层框架：Mybatis/Mybatis Plus + MySQL + Redis + SpringCache + Sharding-jdbc(分库分表) </h5>
+<h5 align="center">其他： JustAuth（第三方登录） + EasyExcel（操作excel）+ knife4j/Swagger（接口文档）+ Hutool（工具包）+ Lombok（插件）+ Fastjson（序列化） </h5>
 <h3>本项目用于个人学习用途，仍不完善</h3>
 
 V1.0未完成功能：分类功能、评论点赞功能
@@ -19,17 +23,17 @@ v1.5 修改了登录页面、使用设计模式完成登录接口、部分代码
 | 项目结构   |                                         |
 | :--- | ---- |
 | annotation     | 自定义注解            |
-| common     | 公共代码，异常处理、结果类等            |
-| config     | 配置类、mybatisplus、redis、shiro、Swagger配置、定时任务配置等 |
+| common     | 公共代码：异常处理、结果类、序列化器、元数据处理器、切面日志获取等            |
+| config     | 配置类：justAuth（获取yml配置）、mybatisplus、redis、shiro、MVC、Swagger配置、定时任务配置等 |
 | constants     | 结果常量 |
 | controller | 控制层代码                              |
 | dao        | 存放Mapper接口                          |
 | interceptor        | 拦截器                          |
-| jwt        | jwt相关代码，过滤器、token生成等        |
 | model       | 实体类pojo、dto、vo                               |
 | service    | 服务层代码                              |
-| shiro      |shiro授权认证|
-| strategy      |设计模式（工厂+策略）|
+| sercurity| shiro：shiro授权认证，jwt：jwt相关代码，过滤器、token生成等|
+| strategy      |设计模式（策略）|
+| utils    |工具类：获取ip、生成salt、线程|
 
 
 
@@ -48,7 +52,7 @@ v1.5 修改了登录页面、使用设计模式完成登录接口、部分代码
 | 用户端                     |                |
 | 博客展示                     |                |
 | 博客评论                     |                |
-
+| 登录                     |   邮箱、用户名登录             |
 
 | 开发配置       |                   |
 | :------------- | ----------------- |
