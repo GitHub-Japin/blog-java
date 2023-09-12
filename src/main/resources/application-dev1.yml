@@ -1,24 +1,28 @@
-#读写分离
+#开发环境：读写分离，分表不分库
 spring:
-  shardingsphere:
-    datasource:
-      names:
-        master,slave
-      # 主数据源
-      master:
-        type: com.alibaba.druid.pool.DruidDataSource
-        driver-class-name: com.mysql.cj.jdbc.Driver
-        url: jdbc:mysql://localhost:3306/vueblog?useSSL=false&serverTimezone=Asia/Shanghai
-        username: ${Japin-Config.username}
-        password: ${Japin-Config.password}
-      # 从数据源
-      slave:
-        type: com.alibaba.druid.pool.DruidDataSource
-        driver-class-name: com.mysql.cj.jdbc.Driver
-        url: jdbc:mysql://localhost:3306/vueblog?useSSL=false&serverTimezone=Asia/Shanghai
-        username: ${Japin-Config.username}
-        password: ${Japin-Config.password}
-    # 读写分离配置
-    masterslave.load-balance-algorithm-type: round_robin #轮询
-    # 打开sql输出日志
-    props.sql.show: true
+  #配置数据源，给数据源起名user0,user1...此处可配置多数据源
+  shardingsphere.datasource.names: master,slave
+  # 数据源
+  shardingsphere.datasource.master.type: com.alibaba.druid.pool.DruidDataSource
+  shardingsphere.datasource.master.driver-class-name: com.mysql.cj.jdbc.Driver
+  shardingsphere.datasource.master.url: jdbc:mysql://localhost:3306/blog_db?characterEncoding=utf-8&serverTimezone=Asia/Shanghai
+  shardingsphere.datasource.master.username: root
+  shardingsphere.datasource.master.password: root
+
+  shardingsphere.datasource.slave.type: com.alibaba.druid.pool.DruidDataSource
+  shardingsphere.datasource.slave.driver-class-name: com.mysql.cj.jdbc.Driver
+  shardingsphere.datasource.slave.url: jdbc:mysql://localhost:3306/blog_db?characterEncoding=utf-8&serverTimezone=Asia/Shanghai
+  shardingsphere.datasource.slave.username: root
+  shardingsphere.datasource.slave.password: root
+
+  # 配置表的分布，表的策略
+#  shardingsphere.sharding.tables.blog.actual-data-nodes: ds0.blog${0..2}
+  # inline表达式   指定分片策略 约定id值
+#  shardingsphere.sharding.tables.blog.table-strategy.inline.sharding-column: id
+#  shardingsphere.sharding.tables.blog.table-strategy.inline.algorithm-expression: blog${id.longValue() % 3}
+
+  # 读写分离配置   ds0为临时数据源命名
+  shardingsphere.sharding.master-slave-rules.ds0.master-data-source-name: master
+  shardingsphere.sharding.master-slave-rules.ds0.slave-data-source-names: slave
+  # 打开sql输出日志
+  shardingsphere.props.sql.show: true

@@ -25,7 +25,6 @@ import java.util.List;
 @EnableSwagger2
 @EnableKnife4j
 public class SpringMVCConfig implements WebMvcConfigurer {
-
     @Override
     public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
         log.info("扩展消息转换器启动...");

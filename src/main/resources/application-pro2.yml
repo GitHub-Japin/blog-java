@@ -1,28 +1,54 @@
-#读写分离，分表不分库
-spring:
-  #配置数据源，给数据源起名user0,user1...此处可配置多数据源
-  shardingsphere.datasource.names: master,slave
-  # 数据源
-  shardingsphere.datasource.master.type: com.alibaba.druid.pool.DruidDataSource
-  shardingsphere.datasource.master.driver-class-name: com.mysql.cj.jdbc.Driver
-  shardingsphere.datasource.master.url: jdbc:mysql://192.168.88.132:3306/blog_db?characterEncoding=utf-8
-  shardingsphere.datasource.master.username: root
-  shardingsphere.datasource.master.password: root
+#读写分离、分库分表
+#配置数据源
+#master0,master1  分库分表
+#master0slave，master1slave 从服务器库
+spring.shardingsphere.datasource.names: master0,master0slave,master1,master1slave
+# master0 数据源
+spring.shardingsphere.datasource.master0.type: com.alibaba.druid.pool.DruidDataSource
+spring.shardingsphere.datasource.master0.driver-class-name: com.mysql.cj.jdbc.Driver
+spring.shardingsphere.datasource.master0.url: jdbc:mysql://localhost:3306/blog_db?serverTimezone=UTC
+spring.shardingsphere.datasource.master0.username: root
+spring.shardingsphere.datasource.master0.password: root
 
-  shardingsphere.datasource.slave.type: com.alibaba.druid.pool.DruidDataSource
-  shardingsphere.datasource.slave.driver-class-name: com.mysql.cj.jdbc.Driver
-  shardingsphere.datasource.slave.url: jdbc:mysql://192.168.88.133:3306/blog_db?characterEncoding=utf-8
-  shardingsphere.datasource.slave.username: root
-  shardingsphere.datasource.slave.password: root
+spring.shardingsphere.datasource.master0slave.type: com.alibaba.druid.pool.DruidDataSource
+spring.shardingsphere.datasource.master0slave.driver-class-name: com.mysql.cj.jdbc.Driver
+spring.shardingsphere.datasource.master0slave.url: jdbc:mysql://192.168.88.130:3306/blog_db?serverTimezone=UTC
+spring.shardingsphere.datasource.master0slave.username: root
+spring.shardingsphere.datasource.master0slave.password: root
 
-  # 配置表的分布，表的策略
-  shardingsphere.sharding.tables.blog.actual-data-nodes: ds0.blog${0..2}
-  # inline表达式   指定分片策略 约定id值
-  shardingsphere.sharding.tables.blog.table-strategy.inline.sharding-column: id
-  shardingsphere.sharding.tables.blog.table-strategy.inline.algorithm-expression: blog${id.longValue() % 3}
+# master1 数据源
+spring.shardingsphere.datasource.master1.type: com.alibaba.druid.pool.DruidDataSource
+spring.shardingsphere.datasource.master1.driver-class-name: com.mysql.cj.jdbc.Driver
+spring.shardingsphere.datasource.master1.url: jdbc:mysql://192.168.88.132:3306/blog_db?serverTimezone=UTC
+spring.shardingsphere.datasource.master1.username: root
+spring.shardingsphere.datasource.master1.password: root
 
-  # 读写分离配置   ds0为临时数据源命名
-  shardingsphere.sharding.master-slave-rules.ds0.master-data-source-name: master
-  shardingsphere.sharding.master-slave-rules.ds0.slave-data-source-names: slave
-  # 打开sql输出日志
-  shardingsphere.props.sql.show: true
+spring.shardingsphere.datasource.master1slave.type: com.alibaba.druid.pool.DruidDataSource
+spring.shardingsphere.datasource.master1slave.driver-class-name: com.mysql.cj.jdbc.Driver
+spring.shardingsphere.datasource.master1slave.url: jdbc:mysql://192.168.88.133:3306/blog_db?serverTimezone=UTC
+spring.shardingsphere.datasource.master1slave.username: root
+spring.shardingsphere.datasource.master1slave.password: root
+
+# 配置数据库的分布，表的分布
+# 分库配置  inline表达式  指定数据库分片策略 约定用户表id值 id % 2  偶数到db_sharding_table_0 奇数到db_sharding_table_1
+spring.shardingsphere.sharding.tables.blog.database-strategy.inline.sharding-column: id
+spring.shardingsphere.sharding.tables.blog.database-strategy.inline.algorithm-expression: master$->{id % 2}
+
+# 分表配置
+# master0:user_0 user_1 user_2;    master1:user_0 user_1 user_2;
+spring.shardingsphere.sharding.tables.blog.actual-data-nodes: master$->{0..1}.blog$->{0..2}
+# inline表达式  指定表分片策略 约定i用户表id值  id % 3
+spring.shardingsphere.sharding.tables.blog.table-strategy.inline.sharding-column: id
+spring.shardingsphere.sharding.tables.blog.table-strategy.inline.algorithm-expression: blog$->{id % 3}
+# 指定user表 主键id 生成策略为 SNOWFLAKE
+spring.shardingsphere.sharding.tables.blog.key-generator.column: id
+spring.shardingsphere.sharding.tables.blog.key-generator.type: SNOWFLAKE
+
+# 读写分离配置
+spring.shardingsphere.sharding.master-slave-rules.master0.master-data-source-name: master0
+spring.shardingsphere.sharding.master-slave-rules.master0.slave-data-source-names: master0slave
+spring.shardingsphere.sharding.master-slave-rules.master1.master-data-source-name: master1
+spring.shardingsphere.sharding.master-slave-rules.master1.slave-data-source-names: master1slave
+
+# 打开sql输出日志
+spring.shardingsphere.props.sql.show: true

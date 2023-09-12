@@ -1,5 +1,5 @@
 #生产环境配置
-#读写分离
+#读写分离，不分库不分表
 spring:
   shardingsphere:
     datasource:
