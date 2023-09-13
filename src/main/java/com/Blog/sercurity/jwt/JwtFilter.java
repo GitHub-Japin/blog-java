@@ -64,7 +64,6 @@ public class JwtFilter extends AuthenticatingFilter {
         }else{
             if(claims == null ||jwtUtil.isTokenExpired(claims.getExpiration())){//如果token过期
                 SecurityUtils.getSubject().logout();
-//                ThreadLocalUtil.clean();
                 throw new ExpiredCredentialsException(ResultConstant.TokenTTLMsg);
             }
             return executeLogin(servletRequest,servletResponse);
@@ -78,7 +77,6 @@ public class JwtFilter extends AuthenticatingFilter {
 
         String jsonMessage= JSON.toJSONString(Result.error(message));
         try {
-//            System.out.println(jsonMessage);
             httpServletResponse.getWriter().write(jsonMessage);
         } catch (IOException ioException) {
             ioException.printStackTrace();

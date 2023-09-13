@@ -38,7 +38,6 @@ public class JwtUtil {
                     .parseClaimsJws(token) //在这会判断下Token的有效性
                     .getBody();
         }catch (Exception e){
-//            System.out.println("校验错误");
             return null;
         }
     }

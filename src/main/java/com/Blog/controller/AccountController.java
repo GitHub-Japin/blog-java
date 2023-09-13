@@ -24,7 +24,6 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@Api("用户登录与注册")
 @RequiredArgsConstructor
 @RestController
 public class AccountController {

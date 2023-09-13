@@ -7,7 +7,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 
-@Api("发送邮件")
 @RestController
 @RequestMapping("/email")
 @RequiredArgsConstructor
