@@ -16,10 +16,10 @@ spring:
   shardingsphere.datasource.slave.password: root
 
   # 配置表的分布，表的策略
-#  shardingsphere.sharding.tables.blog.actual-data-nodes: ds0.blog${0..2}
+  shardingsphere.sharding.tables.blog.actual-data-nodes: ds0.blog${0..2}
   # inline表达式   指定分片策略 约定id值
-#  shardingsphere.sharding.tables.blog.table-strategy.inline.sharding-column: id
-#  shardingsphere.sharding.tables.blog.table-strategy.inline.algorithm-expression: blog${id.longValue() % 3}
+  shardingsphere.sharding.tables.blog.table-strategy.inline.sharding-column: id
+  shardingsphere.sharding.tables.blog.table-strategy.inline.algorithm-expression: blog${id.longValue() % 3}
 
   # 读写分离配置   ds0为临时数据源命名
   shardingsphere.sharding.master-slave-rules.ds0.master-data-source-name: master

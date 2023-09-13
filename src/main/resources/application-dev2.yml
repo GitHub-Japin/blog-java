@@ -31,18 +31,18 @@ spring.shardingsphere.datasource.master1slave.password: root
 
 # 配置数据库的分布，表的分布
 # 分库配置  inline表达式  指定数据库分片策略 约定用户表id值 id % 2  偶数到db_sharding_table_0 奇数到db_sharding_table_1
-#spring.shardingsphere.sharding.tables.blog.database-strategy.inline.sharding-column: id
-#spring.shardingsphere.sharding.tables.blog.database-strategy.inline.algorithm-expression: master$->{id % 2}
+spring.shardingsphere.sharding.tables.blog.database-strategy.inline.sharding-column: id
+spring.shardingsphere.sharding.tables.blog.database-strategy.inline.algorithm-expression: master$->{id % 2}
 
 # 分表配置
 # master0:user_0 user_1 user_2;    master1:user_0 user_1 user_2;
-#spring.shardingsphere.sharding.tables.blog.actual-data-nodes: master$->{0..1}.blog$->{0..2}
+spring.shardingsphere.sharding.tables.blog.actual-data-nodes: master$->{0..1}.blog$->{0..2}
 # inline表达式  指定表分片策略 约定i用户表id值  id % 3
-#spring.shardingsphere.sharding.tables.blog.table-strategy.inline.sharding-column: id
-#spring.shardingsphere.sharding.tables.blog.table-strategy.inline.algorithm-expression: blog$->{id % 3}
+spring.shardingsphere.sharding.tables.blog.table-strategy.inline.sharding-column: id
+spring.shardingsphere.sharding.tables.blog.table-strategy.inline.algorithm-expression: blog$->{id % 3}
 # 指定user表 主键id 生成策略为 SNOWFLAKE
-#spring.shardingsphere.sharding.tables.blog.key-generator.column: id
-#spring.shardingsphere.sharding.tables.blog.key-generator.type: SNOWFLAKE
+spring.shardingsphere.sharding.tables.blog.key-generator.column: id
+spring.shardingsphere.sharding.tables.blog.key-generator.type: SNOWFLAKE
 
 # 读写分离配置
 spring.shardingsphere.sharding.master-slave-rules.master0.master-data-source-name: master0

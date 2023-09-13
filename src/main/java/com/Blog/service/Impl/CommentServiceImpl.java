@@ -12,6 +12,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -25,7 +26,9 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
     private CommentMapper commentMapper;
     @Resource
     private UserService userService;
+
     @Override
+    @RequiresAuthentication//需要在登录认证完成
     public Result<String> saveComment(Comment comment) {
         if(comment.getContent()==null|| StringUtils.isEmpty(comment.getContent())){
             return Result.error(ResultConstant.FailMsg);

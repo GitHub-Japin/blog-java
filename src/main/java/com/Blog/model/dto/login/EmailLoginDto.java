@@ -15,6 +15,6 @@ public class EmailLoginDto {
     private String emailCode;
 
     @NotBlank(message = "图形验证码不能为空")
-    private String code;
+    private String pCode;
 
 }

@@ -30,7 +30,6 @@ public class UserNameLoginStrategy implements AbstractExecuteStrategy<UserNameLo
 
     @Override
     public User executeResp(UserNameLoginDto requestParam) {
-
         //TODO 与数据库的账号密码进行验证,并且生成JWTToken返回给前端 (將原來代码复制到这)
         if (StringUtils.isEmpty(requestParam.getUsername())
                 || StringUtils.isEmpty(requestParam.getPassword())){
@@ -39,7 +38,6 @@ public class UserNameLoginStrategy implements AbstractExecuteStrategy<UserNameLo
         UserNameLoginDto loginDto = new UserNameLoginDto();
         loginDto.setUsername(requestParam.getUsername());
         loginDto.setPassword(requestParam.getPassword());
-        // 这样也行，但是最好还是返回User，然后到controller封装
         return userService.loginWithSalt1(loginDto, response);
     }
 }

@@ -45,12 +45,6 @@ public class OauthController {
         String email = oauthUser.getEmail();
 
         //TODO 随机给用户设置密码，并插入数据库
-        /*LambdaQueryWrapper<User> lambdaQueryWrapper=new LambdaQueryWrapper<>();
-        lambdaQueryWrapper.eq(User::getUsername,username).or().eq(User::getEmail,email);
-        User userExit = userService.getOne(lambdaQueryWrapper);
-        if (userExit != null){
-            return ResultConstant.UserExistMsg;
-        }*/
         User user = new User();
         user.setEmail(email);
         user.setUsername("Gitee_"+username);

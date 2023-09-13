@@ -2,8 +2,7 @@ package com.Blog.service.Impl;
 
 import com.Blog.annotation.MyLog;
 import com.Blog.common.Result;
-import com.Blog.dao.LogMapper;
-import com.Blog.model.pojo.Category;
+import com.Blog.dao.OptLogMapper;
 import com.Blog.model.pojo.OptLog;
 import com.Blog.service.LogService;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -17,7 +16,7 @@ import org.springframework.util.StringUtils;
 
 @Slf4j
 @Service
-public class LogServiceImpl extends ServiceImpl<LogMapper, OptLog> implements LogService {
+public class LogServiceImpl extends ServiceImpl<OptLogMapper, OptLog> implements LogService {
     @Override
     @RequiresAuthentication
 //    @MyLog(name = "日志分页请求")

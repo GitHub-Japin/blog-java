@@ -6,6 +6,7 @@ import cn.afterturn.easypoi.excel.entity.enmus.ExcelType;
 import com.Blog.annotation.MyLog;
 import com.Blog.common.CustomException;
 import com.Blog.common.Result;
+import com.Blog.dao.BlogMapper;
 import com.Blog.dao.CategoryMapper;
 import com.Blog.model.pojo.Blog;
 import com.Blog.model.pojo.Category;
@@ -37,7 +38,7 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
     @Autowired
     private CategoryMapper categoryMapper;
     @Autowired
-    private BlogService blogService;
+    private BlogMapper blogMapper;
 
     @Override
     @RequiresAuthentication
@@ -113,7 +114,7 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
         //查询分类是否关联菜品、套餐
         LambdaQueryWrapper<Blog> blogWrapper = new LambdaQueryWrapper<>();
         blogWrapper.eq(Blog::getCategoryId,id);//查询条件
-        int count = blogService.count(blogWrapper);
+        int count = blogMapper.selectCount(blogWrapper);
         if (count > 0) {
             throw new CustomException("该分类已关联了博客，不能删除");
         }

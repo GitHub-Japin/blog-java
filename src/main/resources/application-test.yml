@@ -1,7 +1,12 @@
 #测试环境配置(未引入shardingjdbc、druid)
-spring:
-  datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/blog_db?characterEncoding=utf-8&serverTimezone=UTC
-    username: ${Japin-Config.username}
-    password: ${Japin-Config.password}
+#spring:
+#  datasource:
+#    driver-class-name:
+#    url: jdbc:mysql://localhost:3306/blog_db?characterEncoding=utf-8&serverTimezone=UTC
+#    username: ${Japin-Config.username}
+#    password: ${Japin-Config.password}
+#    druid:
+#      driver-class-name: com.mysql.cj.jdbc.Driver
+#      url: jdbc:mysql://localhost:3306/blog_db?characterEncoding=utf-8&serverTimezone=UTC
+#      username: root
+#      password: root

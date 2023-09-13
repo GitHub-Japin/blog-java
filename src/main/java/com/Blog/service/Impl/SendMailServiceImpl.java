@@ -9,6 +9,7 @@ import com.Blog.model.dto.login.EmailReq;
 import com.Blog.model.pojo.User;
 import com.Blog.service.SendMailService;
 import com.Blog.service.UserService;
+import com.Blog.utils.RedisUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -58,12 +59,14 @@ public class SendMailServiceImpl implements SendMailService {
 
     @Autowired
     private StringRedisTemplate redisTemplate;
+
+    private final RedisUtil redisUtil;
     @Override
     public Boolean doSendEmailCode(EmailReq emailReq) {
         String sendTo = emailReq.getSendTo();
         String subject = emailReq.getSubject();
         String[] emails = sendTo.split(",");
-        if (StrUtil.isBlank(sendTo) || isEmails(emails)) return false;
+        if (StrUtil.isBlank(sendTo) || !isEmails(emails)) return false;
         try {
             MimeMessage message = javaMailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true);
@@ -74,6 +77,10 @@ public class SendMailServiceImpl implements SendMailService {
                 case EmailConstant.EMAIL_CODE:
                     helper.setSubject("邮箱验证码");
                     helper.setText(String.format(EmailConstant.EMAIL_CODE_CONTEXT, code), true);
+                    // TODO 将验证码存入redis，过期时间为5分钟
+                    if (redisUtil.get(emailReq.getSendTo())==null){
+                        redisUtil.setData(emailReq.getSendTo(),code);
+                    }
                     break;
                 case EmailConstant.EMAIL_NOTICE:
                     helper.setSubject("好消息，好消息!!!!!");
@@ -83,12 +90,9 @@ public class SendMailServiceImpl implements SendMailService {
                     return false;
             }
 
-            // TODO 将验证码存入redis，过期时间为5分钟
-            redisTemplate.opsForValue().set(emailReq.getSendTo()+"_code",code);
-
             javaMailSender.send(message);
         } catch (MessagingException e) {
-            e.printStackTrace();
+//            e.printStackTrace();
             return false;
         }
         return true;
