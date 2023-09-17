@@ -165,7 +165,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
         String username = userRegisterDto.getUsername();
         String mail = userRegisterDto.getMail();
-        if (!Validator.isEmail(mail)) return false;
+        if (!Validator.isEmail(mail)) {
+            return false;
+        }
         //TODO 查询数据库校验用户名和mail已被注册
         LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(User::getUsername, username).or().eq(User::getEmail, mail);
@@ -241,7 +243,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     @MyLog(name = "用户状态更新请求")
     public Result<String> updateStatus(Long id, int status) {
         User user = getById(id);
-        if (user == null) return Result.error(ResultConstant.UserNotExitMsg);
+        if (user == null) {
+            return Result.error(ResultConstant.UserNotExitMsg);
+        }
         user.setStatus(status);
         updateById(user);
         return Result.success(ResultConstant.SuccessMsg);
@@ -253,7 +257,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     @MyLog(name = "用户删除请求")
     public Result<String> deleteUser(Long id) {
         User user = getById(id);
-        if (user == null) return Result.error(ResultConstant.UserNotExitMsg);
+        if (user == null) {
+            return Result.error(ResultConstant.UserNotExitMsg);
+        }
         removeById(id);
         return Result.success(ResultConstant.SuccessMsg);
     }

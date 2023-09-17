@@ -29,7 +29,7 @@ public class LogServiceImpl extends ServiceImpl<OptLogMapper, OptLog> implements
     }
 
     @Override
-    @MyLog(name = "日志删除请求")
+//    @MyLog(name = "日志删除请求")
     @RequiresAuthentication
     @Transactional
     public Result<String> deleteOptLog(Long id) {

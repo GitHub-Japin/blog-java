@@ -66,7 +66,9 @@ public class SendMailServiceImpl implements SendMailService {
         String sendTo = emailReq.getSendTo();
         String subject = emailReq.getSubject();
         String[] emails = sendTo.split(",");
-        if (StrUtil.isBlank(sendTo) || !isEmails(emails)) return false;
+        if (StrUtil.isBlank(sendTo) || !isEmails(emails)) {
+            return false;
+        }
         try {
             MimeMessage message = javaMailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true);

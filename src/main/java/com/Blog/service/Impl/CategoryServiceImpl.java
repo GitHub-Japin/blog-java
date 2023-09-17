@@ -21,6 +21,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -43,6 +45,7 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
     @Override
     @RequiresAuthentication
     @MyLog(name = "分类分页请求")
+    @Cacheable(value = "CategoryCache", key = "#currentPage+'_'+#pageSize+'_'+#title")
     public Result<Page<Category>> page(int currentPage, int pageSize, String title) {
         Page<Category> page = new Page<>(currentPage, pageSize);
         LambdaQueryWrapper<Category> lqw = new LambdaQueryWrapper<>();
@@ -55,6 +58,7 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
     @MyLog(name = "分类删除请求")
     @RequiresAuthentication
     @Transactional
+    @CacheEvict(value = "CategoryCache", allEntries = true)//删除所有缓冲数据
     public Result<String> deleteCategory(Long id) {
         remove(id);
         return Result.success("分类删除成功");
@@ -64,6 +68,7 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
     @MyLog(name = "分类添加请求")
     @RequiresAuthentication
     @Transactional
+    @CacheEvict(value = "CategoryCache", allEntries = true)//删除所有缓冲数据
     public Result<String> saveCategory(Category category) {
         LambdaQueryWrapper<Category> lqw = new LambdaQueryWrapper<>();
         lqw.eq(Category::getCategoryname, category.getCategoryname());
@@ -80,6 +85,7 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
     @MyLog(name = "分类修改请求")
     @RequiresAuthentication
     @Transactional
+    @CacheEvict(value = "CategoryCache", allEntries = true)//删除所有缓冲数据
     public Result<String> updateCategory(Category category) {
         //log.info(category.getCategoryname());
         LambdaQueryWrapper<Category> lqw = new LambdaQueryWrapper<>();
@@ -101,6 +107,7 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
     }
 
     @Override
+    @Cacheable(value = "CategoryCache", key = "#category")
     public Result<List<Category>> categoryList(Category category) {
         LambdaQueryWrapper<Category> query = new LambdaQueryWrapper<>();//构造条件构造器
         query.orderByAsc(Category::getId).orderByDesc(Category::getCreated);//排序，若前面相同，则按后面
@@ -110,6 +117,7 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
 
     @Override
     @RequiresAuthentication
+    @CacheEvict(value = "CategoryCache", allEntries = true)//删除所有缓冲数据
     public void remove(Long id) {//根据id删除分类前需要判断
         //查询分类是否关联菜品、套餐
         LambdaQueryWrapper<Blog> blogWrapper = new LambdaQueryWrapper<>();

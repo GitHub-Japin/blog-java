@@ -52,7 +52,7 @@ public class BlogServiceImpl extends ServiceImpl<BlogMapper, Blog> implements Bl
     @Override
     @RequiresAuthentication
     @MyLog(name = "管理端分页请求")
-    @Cacheable(value = "blogsCache",key="#currentPage+'_'+#pageSize+'_'+#title")
+    @Cacheable(value = "blogsCaches", key = "#currentPage+'_'+#pageSize+'_'+#title")
     public Result<Page<BlogDto>> serverPage(int currentPage, int pageSize, String title) {
         Page<Blog> pages = new Page<>(currentPage, pageSize);
         Page<BlogDto> requestPage = new Page<>();
@@ -132,7 +132,9 @@ public class BlogServiceImpl extends ServiceImpl<BlogMapper, Blog> implements Bl
     @CacheEvict(value = "blogsCache", allEntries = true)//删除所有缓冲数据
     public Result<String> updateStatus(Long id, int status) {
         Blog blog = getById(id);
-        if (blog == null) return Result.error("博客不存在");
+        if (blog == null) {
+            return Result.error("博客不存在");
+        }
         blog.setStatus(status);
         updateById(blog);
         return Result.success("博客状态已更新");
@@ -146,7 +148,9 @@ public class BlogServiceImpl extends ServiceImpl<BlogMapper, Blog> implements Bl
     public Result<String> deleteBlog(Long id) {
         //log.error("deleteBlog被调用了");
         Blog blog = getById(id);
-        if (blog.getId() == null) return Result.error("博客不存在");
+        if (blog.getId() == null) {
+            return Result.error("博客不存在");
+        }
         removeById(id);
         return Result.success("博客已删除");
     }

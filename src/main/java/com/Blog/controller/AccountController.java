@@ -1,27 +1,24 @@
 package com.Blog.controller;
 
+import com.Blog.common.Result;
 import com.Blog.constants.LoginStrategyConstant;
 import com.Blog.model.dto.login.EmailLoginDto;
-import com.Blog.common.Result;
 import com.Blog.model.dto.login.UserNameLoginDto;
 import com.Blog.model.dto.user.UserRegisterDto;
 import com.Blog.model.pojo.User;
 import com.Blog.service.UserService;
 import com.Blog.strategy.core.AbstractStrategyChoose;
-import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 import java.io.IOException;
 
 @RequiredArgsConstructor
@@ -45,7 +42,7 @@ public class AccountController {
     }
 
     @PostMapping("/sendEmailCode")
-    public Boolean sendEmailCode(HttpServletRequest request,@RequestBody @Valid EmailLoginDto emailLoginDto) {
+    public Boolean sendEmailCode(HttpServletRequest request, @RequestBody @Valid EmailLoginDto emailLoginDto) {
         return userService.sendEmailCode(request, emailLoginDto);
     }
 
@@ -57,7 +54,7 @@ public class AccountController {
 
     @PostMapping("/register")
     public Boolean userRegister(@RequestBody @Valid UserRegisterDto userRegisterDto) {
-       return userService.userRegister(userRegisterDto);
+        return userService.userRegister(userRegisterDto);
     }
 
     @RequiresAuthentication
