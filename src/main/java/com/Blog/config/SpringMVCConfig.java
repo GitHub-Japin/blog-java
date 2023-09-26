@@ -33,10 +33,20 @@ public class SpringMVCConfig implements WebMvcConfigurer {
         //设置对象转换器，底层使用Jackson将Java对象转为json
         messageConverter.setObjectMapper(new JacksonObjectMapper());
         //将上面的消息转换器对象追加到mvc框架的转换器集合中，级别调整为0 最高，项目启动时最先启动我们重写的消息转换器。
-        converters.add(0,messageConverter);
+        converters.add(0, messageConverter);
     }
 
- @Bean
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/**") // 所有接口
+                .allowCredentials(true) // 是否发送 Cookie
+                .allowedOriginPatterns("*") // 支持域
+                .allowedMethods("GET", "POST", "PUT", "DELETE") // 支持方法
+                .allowedHeaders("*")
+                .exposedHeaders("*");
+    }
+
+    @Bean
     public Docket createRestApi1() {
         return new Docket(DocumentationType.SWAGGER_2)
                 .apiInfo(apiInfo()).groupName("接口组")

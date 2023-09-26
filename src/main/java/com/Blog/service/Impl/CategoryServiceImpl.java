@@ -10,8 +10,6 @@ import com.Blog.dao.BlogMapper;
 import com.Blog.dao.CategoryMapper;
 import com.Blog.model.pojo.Blog;
 import com.Blog.model.pojo.Category;
-import com.Blog.model.pojo.User;
-import com.Blog.service.BlogService;
 import com.Blog.service.CategoryService;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -31,7 +29,7 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 
 @Slf4j
@@ -43,7 +41,7 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
     private BlogMapper blogMapper;
 
     @Override
-    @RequiresAuthentication
+//    @RequiresAuthentication
     @MyLog(name = "分类分页请求")
     @Cacheable(value = "CategoryCache", key = "#currentPage+'_'+#pageSize+'_'+#title")
     public Result<Page<Category>> page(int currentPage, int pageSize, String title) {
@@ -73,10 +71,10 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
         LambdaQueryWrapper<Category> lqw = new LambdaQueryWrapper<>();
         lqw.eq(Category::getCategoryname, category.getCategoryname());
         Category c = getOne(lqw);//原本数据库对象
-        if (c !=null){
+        if (c != null) {
             return Result.error("分类已存在");
         }
-        category.setCreated(LocalDateTime.now());
+        category.setCreated(new Date());
         save(category);
         return Result.success("分类添加成功");
     }
@@ -91,17 +89,17 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
         LambdaQueryWrapper<Category> lqw = new LambdaQueryWrapper<>();
         lqw.eq(Category::getId, category.getId());
         Category initCategory = getOne(lqw);//原本数据库对象
-        if (initCategory ==null){
+        if (initCategory == null) {
             return Result.error("分类不存在");
         }
-        if(initCategory.getCategoryname().equals(category.getCategoryname())){
+        if (initCategory.getCategoryname().equals(category.getCategoryname())) {
             return Result.error("当前信息未修改");
         }
         initCategory.setCategoryname(category.getCategoryname());
 
-        if(updateById(initCategory)){
+        if (updateById(initCategory)) {
             return Result.success("信息更新成功");
-        }else {
+        } else {
             return Result.error("信息更新失败");
         }
     }
@@ -121,7 +119,7 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
     public void remove(Long id) {//根据id删除分类前需要判断
         //查询分类是否关联菜品、套餐
         LambdaQueryWrapper<Blog> blogWrapper = new LambdaQueryWrapper<>();
-        blogWrapper.eq(Blog::getCategoryId,id);//查询条件
+        blogWrapper.eq(Blog::getCategoryId, id);//查询条件
         int count = blogMapper.selectCount(blogWrapper);
         if (count > 0) {
             throw new CustomException("该分类已关联了博客，不能删除");
@@ -132,19 +130,17 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
     @Override
     @MyLog(name = "分类excel下载请求")
     public void downLoadXlsxWithEayPoi(HttpServletRequest request, HttpServletResponse response) {
-        //        查询用户数据
+        //查询用户数据
         try {
-            List<Category> userList = categoryMapper.selectList(new QueryWrapper<>());
+            List<Category> categoryList = categoryMapper.selectList(new QueryWrapper<>());
             //指定导出的格式是高版本的格式
-            ExportParams exportParams = new ExportParams("员工信息", "数据", ExcelType.XSSF);
-            //        直接使用EasyPOI提供的方法
-            Workbook workbook = ExcelExportUtil.exportExcel(exportParams, User.class, userList);
+            ExportParams exportParams = new ExportParams("分类信息", "数据", ExcelType.XSSF);
+            //直接使用EasyPOI提供的方法
+            Workbook workbook = ExcelExportUtil.exportExcel(exportParams, Category.class, categoryList);
             String filename = "用户信息.xlsx";
-            //            设置文件的打开方式和mime类型
+            //设置文件的打开方式和mime类型
             ServletOutputStream outputStream = null;
-
             outputStream = response.getOutputStream();
-
             response.setHeader("Content-Disposition", "attachment;filename=" + new String(filename.getBytes(), "ISO8859-1"));
             response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
             workbook.write(outputStream);

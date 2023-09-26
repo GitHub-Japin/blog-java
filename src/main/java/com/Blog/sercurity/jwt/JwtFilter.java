@@ -44,7 +44,7 @@ public class JwtFilter extends AuthenticatingFilter {
         return !StringUtils.hasLength(token);
     }
 
-    @Override //携带了Token时会执行该方法，拦截
+    @Override //携带了Token时会执行该方法，拦截 还要加Gitee得校验
     protected boolean onAccessDenied(ServletRequest servletRequest, ServletResponse servletResponse) throws Exception {
         HttpServletRequest request = (HttpServletRequest)servletRequest;
         String token = request.getHeader("Authorization");
@@ -62,9 +62,10 @@ public class JwtFilter extends AuthenticatingFilter {
         if(StringUtils.isEmpty(token)){
             return true;
         }else{
-            if(claims == null ||jwtUtil.isTokenExpired(claims.getExpiration())){//如果token过期
+            if(claims == null ||jwtUtil.isTokenExpired(claims.getExpiration())) {//如果token过期
                 SecurityUtils.getSubject().logout();
-                throw new ExpiredCredentialsException(ResultConstant.TokenTTLMsg);
+                return true;
+//                throw new ExpiredCredentialsException(ResultConstant.TokenTTLMsg);
             }
             return executeLogin(servletRequest,servletResponse);
         }

@@ -34,6 +34,7 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.DigestUtils;
@@ -123,6 +124,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     }
     @Autowired
     private SendMailService sendMailService;
+
     @Override
     public Boolean sendEmailCode(HttpServletRequest request, EmailLoginDto emailLoginDto) {
         if (request.getSession().getAttribute("verifyCode").equals(emailLoginDto.getPCode())){
@@ -234,6 +236,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         if (!StringUtils.isEmpty(name)) {
             lambdaQueryWrapper.like(User::getUsername, name);
         }
+        lambdaQueryWrapper.select(User::getId, User::getUsername, User::getAvatar
+                , User::getEmail, User::getStatus, User::getCreated);
         return Result.success(page(page, lambdaQueryWrapper));
     }
 

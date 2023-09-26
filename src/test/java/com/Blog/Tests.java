@@ -1,10 +1,12 @@
 package com.Blog;
 
+import cn.hutool.crypto.digest.BCrypt;
 import com.Blog.dao.UserMapper;
 import com.Blog.model.pojo.User;
 import com.Blog.service.SendMailService;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import org.apache.shiro.crypto.hash.Md5Hash;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -12,7 +14,9 @@ import org.springframework.util.DigestUtils;
 
 import javax.mail.MessagingException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @SpringBootTest
 class Tests {
@@ -87,14 +91,21 @@ class Tests {
     }
 
     @Test
-    void queryUser2(){//只查指定字段
-        String username="admin";
-        String email="111";
-        LambdaQueryWrapper<User> lambdaQueryWrapper=new LambdaQueryWrapper<>();
-        lambdaQueryWrapper.eq(User::getUsername,username).or().eq(User::getEmail,email);
-        lambdaQueryWrapper.select(User::getUsername,User::getId);
+    void queryUser2() {//只查指定字段
+        String username = "admin";
+        String email = "111";
+        LambdaQueryWrapper<User> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+        lambdaQueryWrapper.eq(User::getUsername, username).or().eq(User::getEmail, email);
+        lambdaQueryWrapper.select(User::getUsername, User::getId);
         User user = userMapper.selectOne(lambdaQueryWrapper);
         System.out.println(user);
     }
 
+    @Test
+    void querytests() {
+//        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        BCrypt bCrypt = new BCrypt();
+        Md5Hash md5Hash = new Md5Hash("1111", "111");
+        System.out.println(md5Hash);
+    }
 }

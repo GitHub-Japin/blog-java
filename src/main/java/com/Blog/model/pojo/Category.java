@@ -9,6 +9,7 @@ import lombok.Data;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Date;
 
 @Data
 @ApiModel(value = "Category", description = "分类实体")
@@ -22,6 +23,6 @@ public class Category implements Serializable {
     private String categoryname;
 
     @ApiModelProperty(value = "创建时间")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")//格式化时间
-    private LocalDateTime created;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")//格式化时间
+    private Date created;
 }
