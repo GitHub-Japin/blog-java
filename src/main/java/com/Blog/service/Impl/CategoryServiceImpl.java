@@ -4,8 +4,10 @@ import cn.afterturn.easypoi.excel.ExcelExportUtil;
 import cn.afterturn.easypoi.excel.entity.ExportParams;
 import cn.afterturn.easypoi.excel.entity.enmus.ExcelType;
 import com.Blog.annotation.MyLog;
+import com.Blog.common.AuthUserOpt;
 import com.Blog.common.CustomException;
 import com.Blog.common.Result;
+import com.Blog.constants.ResultConstant;
 import com.Blog.dao.BlogMapper;
 import com.Blog.dao.CategoryMapper;
 import com.Blog.model.pojo.Blog;
@@ -58,6 +60,9 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
     @Transactional
     @CacheEvict(value = "CategoryCache", allEntries = true)//删除所有缓冲数据
     public Result<String> deleteCategory(Long id) {
+        if (!AuthUserOpt.authOpt()) {
+            return Result.error(ResultConstant.NOTAUTHMsg);
+        }
         remove(id);
         return Result.success("分类删除成功");
     }
@@ -68,6 +73,9 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
     @Transactional
     @CacheEvict(value = "CategoryCache", allEntries = true)//删除所有缓冲数据
     public Result<String> saveCategory(Category category) {
+        if (!AuthUserOpt.authOpt()) {
+            return Result.error(ResultConstant.NOTAUTHMsg);
+        }
         LambdaQueryWrapper<Category> lqw = new LambdaQueryWrapper<>();
         lqw.eq(Category::getCategoryname, category.getCategoryname());
         Category c = getOne(lqw);//原本数据库对象
@@ -85,6 +93,9 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
     @Transactional
     @CacheEvict(value = "CategoryCache", allEntries = true)//删除所有缓冲数据
     public Result<String> updateCategory(Category category) {
+        if (!AuthUserOpt.authOpt()) {
+            return Result.error(ResultConstant.NOTAUTHMsg);
+        }
         //log.info(category.getCategoryname());
         LambdaQueryWrapper<Category> lqw = new LambdaQueryWrapper<>();
         lqw.eq(Category::getId, category.getId());
@@ -116,7 +127,10 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
     @Override
     @RequiresAuthentication
     @CacheEvict(value = "CategoryCache", allEntries = true)//删除所有缓冲数据
-    public void remove(Long id) {//根据id删除分类前需要判断
+    public Result<String> remove(Long id) {//根据id删除分类前需要判断
+        if (!AuthUserOpt.authOpt()) {
+            return Result.error(ResultConstant.NOTAUTHMsg);
+        }
         //查询分类是否关联菜品、套餐
         LambdaQueryWrapper<Blog> blogWrapper = new LambdaQueryWrapper<>();
         blogWrapper.eq(Blog::getCategoryId, id);//查询条件
@@ -125,11 +139,15 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
             throw new CustomException("该分类已关联了博客，不能删除");
         }
         super.removeById(id);
+        return Result.success(ResultConstant.SuccessMsg);
     }
 
     @Override
     @MyLog(name = "分类excel下载请求")
     public void downLoadXlsxWithEayPoi(HttpServletRequest request, HttpServletResponse response) {
+        if (!AuthUserOpt.authOpt()) {
+            return;
+        }
         //查询用户数据
         try {
             List<Category> categoryList = categoryMapper.selectList(new QueryWrapper<>());

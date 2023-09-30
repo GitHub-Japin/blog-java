@@ -27,8 +27,8 @@ public class BlogController {
     }
 
     @GetMapping("/blog/{id}")
-    public Result<Blog> ViewDetails(@PathVariable Long id) {
-        return blogService.ViewDetails(id);
+    public Result<Blog> viewDetails(@PathVariable Long id) {
+        return blogService.viewDetails(id);
     }
 
 
@@ -46,7 +46,6 @@ public class BlogController {
     public Result<String> updateStatus(Long id, int status) {
         return blogService.updateStatus(id,status);
     }
-
 
     @DeleteMapping("/blog/delete/{id}")
     public Result<String> deleteBlog(@PathVariable Long id) {

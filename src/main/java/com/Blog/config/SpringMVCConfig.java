@@ -1,6 +1,7 @@
 package com.Blog.config;
 
 import com.Blog.common.JacksonObjectMapper;
+import com.Blog.interceptor.MyInterceptor;
 import com.github.xiaoymin.knife4j.spring.annotations.EnableKnife4j;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
@@ -25,6 +26,7 @@ import java.util.List;
 @EnableSwagger2
 @EnableKnife4j
 public class SpringMVCConfig implements WebMvcConfigurer {
+
     @Override
     public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
         log.info("扩展消息转换器启动...");
@@ -34,6 +36,13 @@ public class SpringMVCConfig implements WebMvcConfigurer {
         messageConverter.setObjectMapper(new JacksonObjectMapper());
         //将上面的消息转换器对象追加到mvc框架的转换器集合中，级别调整为0 最高，项目启动时最先启动我们重写的消息转换器。
         converters.add(0, messageConverter);
+    }
+
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        MyInterceptor interceptor = new MyInterceptor();
+        registry.addInterceptor(interceptor);
+        WebMvcConfigurer.super.addInterceptors(registry);
     }
 
     @Override

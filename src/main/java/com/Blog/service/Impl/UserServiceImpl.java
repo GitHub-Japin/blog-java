@@ -7,20 +7,21 @@ import cn.hutool.captcha.CaptchaUtil;
 import cn.hutool.captcha.ShearCaptcha;
 import cn.hutool.core.lang.Validator;
 import com.Blog.annotation.MyLog;
+import com.Blog.common.AuthUserOpt;
 import com.Blog.common.CustomException;
-import com.Blog.constants.EmailConstant;
-import com.Blog.model.dto.login.EmailLoginDto;
-import com.Blog.model.dto.login.EmailReq;
-import com.Blog.model.dto.user.UserRegisterDto;
-import com.Blog.service.SendMailService;
-import com.Blog.utils.RandomStringSaltUtil;
 import com.Blog.common.Result;
+import com.Blog.constants.EmailConstant;
 import com.Blog.constants.ResultConstant;
 import com.Blog.dao.UserMapper;
-import com.Blog.sercurity.jwt.JwtUtil;
+import com.Blog.model.dto.login.EmailLoginDto;
+import com.Blog.model.dto.login.EmailReq;
 import com.Blog.model.dto.login.UserNameLoginDto;
+import com.Blog.model.dto.user.UserRegisterDto;
 import com.Blog.model.pojo.User;
+import com.Blog.sercurity.jwt.JwtUtil;
+import com.Blog.service.SendMailService;
 import com.Blog.service.UserService;
+import com.Blog.utils.RandomStringSaltUtil;
 import com.Blog.utils.RedisUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -34,7 +35,6 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.DigestUtils;
@@ -52,20 +52,20 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     @Autowired
     private JwtUtil jwtUtil;
 
-    private Boolean IsUserExists(String username) {
+    private Boolean isUserExists(String username) {
         LambdaQueryWrapper<User> lambdaQueryWrapper = new LambdaQueryWrapper<>();
         lambdaQueryWrapper.eq(User::getUsername, username);/*select * from user where id= ''得到整行数据*/
         User user = getOne(lambdaQueryWrapper);//原本数据库对象
         return user != null;
     }
 
-    private User QueryUser(String username) {
+    private User queryUser(String username) {
         LambdaQueryWrapper<User> lambdaQueryWrapper = new LambdaQueryWrapper<>();
         lambdaQueryWrapper.eq(User::getUsername, username);/*select * from user where id= ''得到整行数据*/
         return getOne(lambdaQueryWrapper);
     }
 
-    private User QueryUserByEmail(String email) {
+    private User queryUserByEmail(String email) {
         LambdaQueryWrapper<User> lambdaQueryWrapper = new LambdaQueryWrapper<>();
         lambdaQueryWrapper.eq(User::getEmail, email);
         return getOne(lambdaQueryWrapper);
@@ -79,7 +79,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             throw new CustomException(ResultConstant.FailMsg);
 //            return Result.error(ResultConstant.FailMsg);
         }
-        User user = QueryUser(loginDto.getUsername());
+        User user = queryUser(loginDto.getUsername());
         if (user == null || user.getDeleted() == 1) {
             throw new CustomException(ResultConstant.FailMsg);
 //            return Result.error(ResultConstant.AccountNotExist);
@@ -110,7 +110,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
                 || StringUtils.isEmpty(loginDto.getPCode())) {
             throw new CustomException(ResultConstant.FailMsg);
         }
-        User user = QueryUserByEmail(loginDto.getEmail());
+        User user = queryUserByEmail(loginDto.getEmail());
         if (user == null || user.getDeleted() == 1 ||user.getStatus().equals(ResultConstant.AccountLockCode)) {
             throw new CustomException(ResultConstant.FailMsg);
         }
@@ -201,7 +201,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
                 || StringUtils.isEmpty(loginDto.getPassword())) {
             return Result.error(ResultConstant.FailMsg);
         }
-        User user = QueryUser(loginDto.getUsername());
+        User user = queryUser(loginDto.getUsername());
         if (user == null || user.getDeleted() == 1) {
             return Result.error(ResultConstant.AccountNotExist);
         }
@@ -246,6 +246,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     @RequiresAuthentication//等同于方法subject.isAuthenticated() 结果为true时。
     @MyLog(name = "用户状态更新请求")
     public Result<String> updateStatus(Long id, int status) {
+        if (!AuthUserOpt.authOpt()) {
+            return Result.error(ResultConstant.NOTAUTHMsg);
+        }
         User user = getById(id);
         if (user == null) {
             return Result.error(ResultConstant.UserNotExitMsg);
@@ -260,6 +263,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     @RequiresAuthentication
     @MyLog(name = "用户删除请求")
     public Result<String> deleteUser(Long id) {
+        if (!AuthUserOpt.authOpt()) {
+            return Result.error(ResultConstant.NOTAUTHMsg);
+        }
         User user = getById(id);
         if (user == null) {
             return Result.error(ResultConstant.UserNotExitMsg);
@@ -273,7 +279,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 //    @RequiresAuthentication
     @MyLog(name = "用户注册请求")
     public Result<String> saveUser(User user) {
-        Boolean isUserExists = IsUserExists(user.getUsername());
+        Boolean isUserExists = isUserExists(user.getUsername());
         if (isUserExists) {
             return Result.error(ResultConstant.UserExistMsg);
         }
@@ -296,7 +302,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     @MyLog(name = "用户更新请求")
     public Result<String> updateUser(User user) {
         //log.error("传入用户为：{}",user);
-        User initUser = QueryUser(user.getUsername());
+        User initUser = queryUser(user.getUsername());
         if (initUser == null) {
             return Result.error(ResultConstant.UserNotExitMsg);
         }
@@ -321,6 +327,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     @Override
     @MyLog(name = "用户excel下载请求")
     public void downLoadXlsxWithEayPoi(HttpServletRequest request, HttpServletResponse response) {
+        if (!AuthUserOpt.authOpt()) {
+            return;
+        }
         //查询用户数据
         try {
             List<User> userList = list(new QueryWrapper<>());
@@ -338,43 +347,4 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             e.printStackTrace();
         }
     }
-
-    /*@Autowired
-    private UserLoginFactory factory;
-
-    public LoginResp login(LoginReq loginReq){
-        UserGranter granter = factory.getGranter(loginReq.getType());
-        if(granter == null){
-            LoginResp loginResp = new LoginResp();
-            loginResp.setSuccess(false);
-            return loginResp;
-        }
-        LoginResp loginResp = granter.login(loginReq);
-        return loginResp;
-
-        *//*if(loginReq.getType().equals("account")){
-            System.out.println("用户名密码登录");
-
-            //执行用户密码登录逻辑
-
-            return new LoginResp();
-
-        }else if(loginReq.getType().equals("sms")){
-            System.out.println("手机号验证码登录");
-
-            //执行手机号验证码登录逻辑
-
-            return new LoginResp();
-        }else if (loginReq.getType().equals("we_chat")){
-            System.out.println("微信登录");
-
-            //执行用户微信登录逻辑
-
-            return new LoginResp();
-        }
-        LoginResp loginResp = new LoginResp();
-        loginResp.setSuccess(false);
-        System.out.println("登录失败");
-        return loginResp;*//*
-    }*/
 }

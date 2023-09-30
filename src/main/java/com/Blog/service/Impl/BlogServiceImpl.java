@@ -3,8 +3,8 @@ package com.Blog.service.Impl;
 import com.Blog.annotation.MyLog;
 import com.Blog.common.Result;
 import com.Blog.dao.BlogMapper;
-import com.Blog.model.pojo.Blog;
 import com.Blog.model.dto.blog.BlogDto;
+import com.Blog.model.pojo.Blog;
 import com.Blog.model.pojo.Category;
 import com.Blog.model.pojo.User;
 import com.Blog.service.BlogService;
@@ -19,7 +19,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.context.annotation.Lazy;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -38,7 +38,7 @@ public class BlogServiceImpl extends ServiceImpl<BlogMapper, Blog> implements Bl
 
     @Override
     //@MyLog(name = "客户端分页请求")
-    @Cacheable(value = "blogsCache",key="#currentPage+'_'+#pageSize+'_'+#title")
+    @Cacheable(value = "blogsCache", key = "#currentPage+'_'+#pageSize+'_'+#title")
     public Result<Page<BlogDto>> clientPage(int currentPage, int pageSize, String title) {
         Page<Blog> pages = new Page<>(currentPage, pageSize);
         Page<BlogDto> requestPage = new Page<>();
@@ -64,7 +64,7 @@ public class BlogServiceImpl extends ServiceImpl<BlogMapper, Blog> implements Bl
 
     //拷贝分页page属性
     private Result<Page<BlogDto>> getPageResult(Page<Blog> pages, Page<BlogDto> requestPage) {
-        BeanUtils.copyProperties(pages, requestPage,"records");
+        BeanUtils.copyProperties(pages, requestPage, "records");
         List<Blog> records = pages.getRecords();
 
         List<BlogDto> list = records.stream().map(item -> {
@@ -86,8 +86,8 @@ public class BlogServiceImpl extends ServiceImpl<BlogMapper, Blog> implements Bl
     }
 
     @Override
-    //@MyLog(name = "文章详情(预览)请求")
-    public Result<Blog> ViewDetails(Long id) {
+    @MyLog(name = "文章详情(预览)请求")
+    public Result<Blog> viewDetails(Long id) {
         Blog blog = getById(id);
         return Result.success(blog);
     }
@@ -97,13 +97,18 @@ public class BlogServiceImpl extends ServiceImpl<BlogMapper, Blog> implements Bl
     @MyLog(name = "后端文章点击查看请求")
     public Result<String> getBlogContent(Long id) {
         Blog blog = getById(id);
-        if (blog == null) return Result.error("获取失败");
+        if (blog == null) {
+            return Result.error("获取失败");
+        }
         return Result.success(blog.getContent());
     }
 
     @Override
     @Transactional
-    @CacheEvict(value = "blogsCache", allEntries = true)//删除所有缓冲数据
+    @Caching(evict = {
+            @CacheEvict(value = "blogsCache", allEntries = true),
+            @CacheEvict(value = "blogsCaches", allEntries = true)
+    })
     @RequiresAuthentication//需要在登录认证完成
     @MyLog(name = "文章编辑请求")
     public Result<String> editBlog(Blog blog) {
@@ -129,7 +134,10 @@ public class BlogServiceImpl extends ServiceImpl<BlogMapper, Blog> implements Bl
     @MyLog(name = "文章上下架请求")
     @RequiresAuthentication
     @Transactional
-    @CacheEvict(value = "blogsCache", allEntries = true)//删除所有缓冲数据
+    @Caching(evict = {
+            @CacheEvict(value = "blogsCache", allEntries = true),
+            @CacheEvict(value = "blogsCaches", allEntries = true)
+    })
     public Result<String> updateStatus(Long id, int status) {
         Blog blog = getById(id);
         if (blog == null) {
@@ -144,7 +152,10 @@ public class BlogServiceImpl extends ServiceImpl<BlogMapper, Blog> implements Bl
     @MyLog(name = "文章删除请求")
     @RequiresAuthentication
     @Transactional
-    @CacheEvict(value = "blogsCache", allEntries = true)//删除所有缓冲数据
+    @Caching(evict = {
+            @CacheEvict(value = "blogsCache", allEntries = true),
+            @CacheEvict(value = "blogsCaches", allEntries = true)
+    })
     public Result<String> deleteBlog(Long id) {
         //log.error("deleteBlog被调用了");
         Blog blog = getById(id);

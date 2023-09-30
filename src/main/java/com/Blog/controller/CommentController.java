@@ -15,12 +15,17 @@ public class CommentController {
     private CommentService commentService;
 
     @PostMapping
-    public Result<String> save(@RequestBody Comment comment){
+    public Result<String> save(@RequestBody Comment comment) {
         return commentService.saveComment(comment);
     }
 
     @GetMapping
-    public Map<String,List<Comment>> list(@RequestParam Long blogId){
+    public Map<String, List<Comment>> list(@RequestParam Long blogId) {
         return commentService.list(blogId);
+    }
+
+    @DeleteMapping("{id}")
+    public Result<String> delete(@PathVariable Long id) {
+        return commentService.removeComment(id);
     }
 }

@@ -15,6 +15,8 @@ public interface CategoryService extends IService<Category> {
     Result<String> saveCategory(Category category);
     Result<String> updateCategory(Category category);
     Result<List<Category>> categoryList(Category category);
-    void remove(Long id);
+
+    Result<String> remove(Long id);
+
     void downLoadXlsxWithEayPoi(HttpServletRequest request, HttpServletResponse response);
 }

@@ -11,6 +11,9 @@ import java.util.Map;
 @Service
 public interface CommentService  extends IService<Comment> {
     Result<String> saveComment(Comment comment);
+
+    Result<String> removeComment(Long commentId);
+
     List<Comment> findAllByBlogId(Long blogId);
     Map<String,List<Comment>> list(Long blogId);
 }

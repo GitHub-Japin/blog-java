@@ -46,8 +46,8 @@ public class UserController {
     }
 
     //更新状态
-    @PutMapping("/updateStatus")
-    public Result<String> updateStatus(Long id, int status) {
+    @PutMapping("/updateStatus/{id}/{status}")
+    public Result<String> updateStatus(@PathVariable Long id, @PathVariable int status) {
         return userService.updateStatus(id, status);
     }
 

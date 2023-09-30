@@ -1,7 +1,8 @@
 package com.Blog.service.Impl;
 
-import com.Blog.annotation.MyLog;
+import com.Blog.common.AuthUserOpt;
 import com.Blog.common.Result;
+import com.Blog.constants.ResultConstant;
 import com.Blog.dao.OptLogMapper;
 import com.Blog.model.pojo.OptLog;
 import com.Blog.service.LogService;
@@ -21,6 +22,9 @@ public class LogServiceImpl extends ServiceImpl<OptLogMapper, OptLog> implements
     @RequiresAuthentication
 //    @MyLog(name = "日志分页请求")
     public Result<Page<OptLog>> page(int currentPage, int pageSize, String title) {
+        if (!AuthUserOpt.authOpt()) {
+            return Result.error(ResultConstant.NOTAUTHMsg);
+        }
         Page<OptLog> page = new Page<>(currentPage, pageSize);
         LambdaQueryWrapper<OptLog> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.like(StringUtils.hasLength(title), OptLog::getAnnotation, title);
@@ -33,6 +37,9 @@ public class LogServiceImpl extends ServiceImpl<OptLogMapper, OptLog> implements
     @RequiresAuthentication
     @Transactional
     public Result<String> deleteOptLog(Long id) {
+        if (!AuthUserOpt.authOpt()) {
+            return Result.error(ResultConstant.NOTAUTHMsg);
+        }
         removeById(id);
         return Result.success("日志删除成功");
     }
