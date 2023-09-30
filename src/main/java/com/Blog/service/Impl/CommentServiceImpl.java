@@ -82,7 +82,7 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
         //找出本博客下所有评论
         List<Comment> comments = findAllByBlogId(blogId);
         List<Comment> resComments = new ArrayList<>();
-        //设置头像
+        //设置父级头像
         for (Comment comment : comments) {
             comment.setAvatar(userService.getById(comment.getUserId()).getAvatar());
             resComments.add(comment);
@@ -100,6 +100,9 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
 
     public void setChildrenComments(Long parentId, List<Comment> comments) {
         List<Comment> childrenComments = getChildrenComments(parentId);
+        for (Comment comment : childrenComments) {
+            comment.setAvatar(userService.getById(comment.getUserId()).getAvatar());
+        }
         comments.addAll(childrenComments);
         for (Comment childrenComment : childrenComments) {
             setChildrenComments(childrenComment.getId(), comments);
