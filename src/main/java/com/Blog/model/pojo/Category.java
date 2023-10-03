@@ -7,6 +7,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Date;
@@ -20,6 +21,7 @@ public class Category implements Serializable {
     private Long id;
 
     @ApiModelProperty(value = "分类名")
+    @NotBlank(message = "分类名不能为空")
     private String categoryname;
 
     @ApiModelProperty(value = "创建时间")

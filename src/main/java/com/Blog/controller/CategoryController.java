@@ -5,6 +5,7 @@ import com.Blog.model.pojo.Category;
 import com.Blog.service.CategoryService;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -33,8 +34,8 @@ public class CategoryController {
     }
 
     @PostMapping("/add")
-    public Result<String> saveCategory(@RequestBody Category category) {
-       return categoryService.saveCategory(category);
+    public Result<String> saveCategory(@RequestBody @Validated Category category) {
+        return categoryService.saveCategory(category);
     }
 
     @PutMapping("/update")

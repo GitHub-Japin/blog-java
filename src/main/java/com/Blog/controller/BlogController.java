@@ -7,6 +7,7 @@ import com.Blog.service.BlogService;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -38,7 +39,7 @@ public class BlogController {
     }
 
     @PostMapping("/blog/edit")
-    public Result<String> editBlog(@RequestBody Blog blog) {
+    public Result<String> editBlog(@RequestBody @Validated Blog blog) {
         return blogService.editBlog(blog);
     }
 

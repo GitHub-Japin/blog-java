@@ -29,7 +29,7 @@ public class UserController {
 
     //添加用户账号
     @PostMapping("/add")
-    public Result<String> saveUser(@RequestBody User user) {
+    public Result<String> saveUser(@RequestBody @Validated User user) {
         return userService.saveUser(user);
     }
 
@@ -41,7 +41,7 @@ public class UserController {
 
     //更新用户信息
     @PutMapping("/update")
-    public Result<String> updateUser(@RequestBody User user) {
+    public Result<String> updateUser(@RequestBody @Validated User user) {
         return userService.updateUser(user);
     }
 

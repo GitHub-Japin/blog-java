@@ -2,6 +2,7 @@ package com.Blog.service.Impl;
 
 import com.Blog.annotation.MyLog;
 import com.Blog.common.Result;
+import com.Blog.constants.ResultConstant;
 import com.Blog.dao.BlogMapper;
 import com.Blog.model.dto.blog.BlogDto;
 import com.Blog.model.pojo.Blog;
@@ -13,6 +14,8 @@ import com.Blog.service.UserService;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.springframework.beans.BeanUtils;
@@ -23,7 +26,9 @@ import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
+import org.springframework.validation.annotation.Validated;
 
+import java.time.Duration;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -85,10 +90,19 @@ public class BlogServiceImpl extends ServiceImpl<BlogMapper, Blog> implements Bl
         return Result.success(requestPage);
     }
 
+    // 构建cache对象 设置缓存有效期为 10 秒，从最后一次写入开始计时 设置缓存大小上限为 1
+    Cache<String, Blog> cache = Caffeine.newBuilder()
+            .expireAfterWrite(Duration.ofSeconds(10))
+            .maximumSize(100)
+            .build();
+
     @Override
     @MyLog(name = "文章详情(预览)请求")
     public Result<Blog> viewDetails(Long id) {
-        Blog blog = getById(id);
+        if (id == null) {
+            return Result.error(ResultConstant.FailMsg);
+        }
+        Blog blog = cache.get("CACHE:blog_id", key -> getById(id));
         return Result.success(blog);
     }
 

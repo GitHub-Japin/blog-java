@@ -4,6 +4,7 @@ import com.Blog.model.dto.login.EmailReq;
 import com.Blog.service.SendMailService;
 import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -15,7 +16,7 @@ public class EmailController {
     private final SendMailService sendMailService;
 
     @PostMapping("/codeOrNotice")
-    public Boolean sendEmailCode(@RequestBody EmailReq emailReq){
+    public Boolean sendEmailCode(@RequestBody @Validated EmailReq emailReq) {
         return sendMailService.doSendEmailCode(emailReq);
     }
 

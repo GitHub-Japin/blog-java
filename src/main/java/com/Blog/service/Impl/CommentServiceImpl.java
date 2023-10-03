@@ -31,9 +31,9 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
     @Override
     @RequiresAuthentication//需要在登录认证完成
     public Result<String> saveComment(Comment comment) {
-        if (comment.getContent() == null || StringUtils.isEmpty(comment.getContent())) {
+        /*if (comment.getContent() == null || StringUtils.isEmpty(comment.getContent())) {
             return Result.error(ResultConstant.FailMsg);
-        }
+        }*/
         User user = (User) SecurityUtils.getSubject().getPrincipal();
         comment.setUserId(user.getId());
         comment.setUserName(user.getUsername());

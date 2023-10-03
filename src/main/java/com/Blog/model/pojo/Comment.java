@@ -12,6 +12,8 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 
+import javax.validation.constraints.NotBlank;
+
 /**
  * <p>
  *
@@ -32,6 +34,7 @@ public class Comment implements Serializable {
     private Long id;
 
     @ApiModelProperty("评论内容")
+    @NotBlank(message = "评论不能为空")
     private String content;
 
     @ApiModelProperty("评论人名")

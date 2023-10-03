@@ -8,14 +8,16 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Data
 //@Table(name="user")
-@ApiModel(value = "User",description = "用户实体")
+@ApiModel(value = "User", description = "用户实体")
 @AllArgsConstructor
 @NoArgsConstructor
 public class User implements Serializable {
@@ -25,8 +27,9 @@ public class User implements Serializable {
     @ApiModelProperty(value = "编号")
     private Long id;
 
-    @ApiModelProperty(value = "姓名")
-    @Excel(name = "姓名", orderNum = "1", width = 15, isImportField = "true")
+    @ApiModelProperty(value = "用户名")
+    @Excel(name = "用户名", orderNum = "1", width = 15, isImportField = "true")
+    @NotBlank(message = "用户名不能为空")
     private String username;
 
     @ApiModelProperty(value = "头像")
@@ -40,6 +43,7 @@ public class User implements Serializable {
 
     @ApiModelProperty(value = "密码")
     @Excel(name = "密码", orderNum = "4", width = 15, isImportField = "true")
+    @Length(min = 6, max = 15, message = "密码长度在 6 到 15 个字符")
     private String password;
 
     @ApiModelProperty(value = "salt")

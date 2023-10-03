@@ -74,23 +74,23 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     // 把这里改成返回User，前端才能拿到数据
     @Override
     public User loginWithSalt1(UserNameLoginDto loginDto, HttpServletResponse response) {
-        if (StringUtils.isEmpty(loginDto.getUsername())
+        /*if (StringUtils.isEmpty(loginDto.getUsername())
                 || StringUtils.isEmpty(loginDto.getPassword())) {
             throw new CustomException(ResultConstant.FailMsg);
 //            return Result.error(ResultConstant.FailMsg);
-        }
+        }*/
         User user = queryUser(loginDto.getUsername());
         if (user == null || user.getDeleted() == 1) {
-            throw new CustomException(ResultConstant.FailMsg);
+            throw new CustomException(ResultConstant.UserNotExitMsg);
 //            return Result.error(ResultConstant.AccountNotExist);
         }
         if (user.getStatus().equals(ResultConstant.AccountLockCode)) {
-            throw new CustomException(ResultConstant.FailMsg);
+            throw new CustomException(ResultConstant.AccountLock);
 //            return Result.error(ResultConstant.AccountLock);
         }
         String password = DigestUtils.md5DigestAsHex((loginDto.getPassword() + user.getSalt()).getBytes());
         if (!password.equals(user.getPassword())) {
-            throw new CustomException(ResultConstant.FailMsg);
+            throw new CustomException(ResultConstant.PasswordNotCorrect);
 //            return Result.error(ResultConstant.PasswordNotCorrect);
         }
         String jwt = jwtUtil.generateToken(user.getId());
@@ -288,9 +288,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         user.setPassword(DigestUtils.md5DigestAsHex((user.getPassword() + salt).getBytes()));
         user.setStatus(ResultConstant.AccountUnLockCode);
         user.setCreated(LocalDateTime.now());
-        user.setAvatar("https://image-1300566513.cos.ap-guangzhou.myqcloud.com/upload/images/5a9f48118166308daba8b6da7e466aab.jpg");
-        boolean IsSave = save(user);
-        if (!IsSave) {
+        if (user.getAvatar() == null) {
+            user.setAvatar("https://image-1300566513.cos.ap-guangzhou.myqcloud.com/upload/images/5a9f48118166308daba8b6da7e466aab.jpg");
+        }
+        boolean isSave = save(user);
+        if (!isSave) {
             return Result.error(ResultConstant.FailMsg);
         }
         return Result.success(ResultConstant.SuccessMsg);
